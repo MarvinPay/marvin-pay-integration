@@ -17,7 +17,7 @@ curl -X POST "https://api.marvincorporate.co/api/v1/payment/collect" \
   -H "X-Idempotency-Key: order-1001-attempt-1" \
   -H "Content-Type: application/json" \
   -d '{ "country_code": "CM", "currency": "XAF", "amount": 5000,
-        "mobile_number": "237670000001", "payment_method": "mtn_cm",
+        "mobile_number": "2376XXXXXXXX", "payment_method": "mtn_cm",
         "transaction_id": "order-1001" }'
 ```
 
@@ -27,7 +27,8 @@ The server picks the effective idempotency key in this order:
 
 1. The **`X-Idempotency-Key` request header** (if present).
 2. The body field **`idempotency_key`** (if present).
-3. An **auto-generated deterministic key**: `auto:{apiKey}:{transactionId}`.
+3. An **auto-generated deterministic key** derived from your API key and
+   `transaction_id`.
 
 Because of step 3, even if you send no key at all, requests with the same
 `transaction_id` under the same API key are naturally de-duplicated. Still,
@@ -47,12 +48,6 @@ sending an explicit key is best practice.
 Surface these headers to your calling code so you can tell a fresh result from a
 replay.
 
-## Bulk payout: `batch_reference`
-
-[Bulk payout](05-bulk-payout.md) does not use `X-Idempotency-Key`. Its idempotency
-key is the **`batch_reference`** body field — resubmitting the same
-`batch_reference` will not create a duplicate batch.
-
 ## Best practices
 
 - **Always send `X-Idempotency-Key`.** If you don't have a natural key, default it
@@ -61,4 +56,4 @@ key is the **`batch_reference`** body field — resubmitting the same
   retrying the exact same request after a network error/timeout.
 - Keep the key stable across retries but unique across distinct transactions.
 - Treat a `429` or a network timeout as **retryable with the same key** — see
-  [Errors & Rate Limits](13-errors-and-rate-limits.md).
+  [Errors & Rate Limits](09-errors-and-rate-limits.md).

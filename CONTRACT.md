@@ -1,9 +1,9 @@
-# Marvin Pay — API Contract (source of truth)
+# Marvin Pay — API Reference
 
-> This file is the authoritative, code-grounded reference the SDKs and docs are
-> generated from. Everything here was verified against the Marvin Pay backend
-> source. Where a value must be confirmed by a human it is marked `⟨CONFIRM⟩`.
-> **Do not invent fields.** If it is not here, it does not exist.
+> A concise, complete reference to the Marvin Pay payment API — **collect** and
+> **payout** — including request/response shapes, headers, enums, and webhooks.
+> Pair it with the step-by-step guide in [`docs/`](docs/) and the ready-to-use
+> clients in [`sdks/`](sdks/).
 
 ---
 
@@ -13,21 +13,18 @@
 - **JSON casing:** `snake_case` on the payment API DTOs (e.g. `country_code`,
   `mobile_number`, `transaction_id`, `fee_bearer`).
 - **Amounts:** whole numbers. XAF and XOF have **no minor units** — never send
-  decimals. Server type is `BigDecimal`; **min 100, max 500000** per transaction.
-  In JSON send as a bare number (e.g. `5000`). SDKs should accept a decimal/integer
-  and serialize without a fractional part.
-- **Currency + country always travel together.** Every money request carries BOTH
+  decimals. **Min 100, max 500000** per transaction. In JSON send as a bare number
+  (e.g. `5000`).
+- **Currency + country always travel together.** Every request carries BOTH
   `currency` and `country_code`. Sending one without the other is invalid.
-- **Idempotency:** money-moving POSTs accept `X-Idempotency-Key` (see §7).
+- **Idempotency:** the money-moving POSTs accept `X-Idempotency-Key` (see §5).
 
 ### Base URL
 
 - **Servlet context path is `/api`.** Every route below is served under `/api`,
   so the wire path for `/v1/payment/collect` is `POST /api/v1/payment/collect`.
 - **Production base URL:** `https://api.marvincorporate.co/api`
-- **Local/dev:** `http://localhost:9090/api`
-- **Sandbox/test host for external merchants:** `⟨CONFIRM⟩` (candidate:
-  `https://test.marvincorporate.co/api` — confirm before publishing). See §12.
+- **Testing:** run against the test environment provided by Marvin Pay (see §8).
 
 SDKs default `baseUrl` to `https://api.marvincorporate.co/api` and allow override.
 
@@ -35,35 +32,18 @@ SDKs default `baseUrl` to `https://api.marvincorporate.co/api` and allow overrid
 
 ## 1. Authentication
 
-There are **two separate schemes**, split by URL prefix.
+The payment API uses a single scheme: an **API key** in the `X-API-KEY` header on
+every `/v1/payment/**` call.
 
-### 1.1 Merchant Payment API — `X-API-KEY` (the integration surface)
-
-- Applies to **`/v1/payment/**`**.
-- Header: **`X-API-KEY: <your api key>`**. The key alone authenticates — there is
-  no request signing/HMAC on payment calls.
-- The key is issued on your `MerchantAccounts` record. How a merchant obtains it:
-  `⟨CONFIRM⟩` (self-serve portal screen vs. ops-provisioned).
-- **Production hardening:** in prod the server validates the request `Origin` /
-  `Referer` / source IP against the account's whitelisted origins and the
-  merchant's whitelisted IPs. Server-to-server calls should originate from a
-  whitelisted IP. Rate limiting applies (see §11).
+- Header: **`X-API-KEY: <your api key>`**.
+- Obtain your API key from the merchant portal or your Marvin Pay account manager.
+- **Production hardening:** the server validates the request `Origin` / `Referer` /
+  source IP against your account's whitelisted origins and IPs. Server-to-server
+  calls should originate from a whitelisted IP. Rate limiting applies (see §9).
 - `⇒` responses: `401` if the key is missing/unknown; `403` if the account is
   blocked/inactive or the origin/IP is not allowed.
 
-> There is a **deprecated** `POST /v1/payment/authenticate` that exchanges
-> `api_key` + `api_secret` for a 30-minute JWT. Do **not** build on it — use
-> `X-API-KEY` directly. Documented for completeness only.
-
-### 1.2 Merchant Portal / Admin — JWT bearer (NOT the primary integration path)
-
-- Header: `Authorization: Bearer <jwt>`.
-- Obtained through an OTP login flow on `/merchant-auth/*`
-  (`signin` → `verify-otp`). This is portal-driven and interactive.
-- Required by: bulk payout, and the **creation** endpoints for invoices,
-  campaigns, and QR codes.
-- SDKs expose an optional `bearerToken` so a merchant who already has a portal JWT
-  can call these endpoints. SDKs do **not** implement the interactive OTP login.
+Keep the key server-side only; never expose it in browser or mobile client code.
 
 ---
 
@@ -75,9 +55,8 @@ There are **two separate schemes**, split by URL prefix.
 - **Webhook payload field `status` (string):** `SUCCESS | FAILED | PENDING | CANCEL`
 - Terminal states: success and failed. `PENDING` means keep polling / await webhook.
 
-> ⚠️ Note the wording difference on purpose: REST status responses say
-> `SUCCESSFUL`, webhooks say `SUCCESS`. SDKs should normalize both to a single
-> enum (e.g. `SUCCEEDED`) for callers.
+> Note the wording difference: REST status responses say `SUCCESSFUL`, webhooks say
+> `SUCCESS`. SDKs normalize both to a single enum (e.g. `SUCCEEDED`) for callers.
 
 ### 2.2 Fee bearer — `fee_bearer`
 
@@ -87,7 +66,8 @@ There are **two separate schemes**, split by URL prefix.
 
 ### 2.3 Fee direction (for `GET /v1/payment/fees`)
 
-`COLLECT | PAYOUT | TOPUP | WITHDRAWAL` (merchants use `COLLECT` / `PAYOUT`).
+`COLLECT | PAYOUT` (merchant-facing). The API also defines `TOPUP | WITHDRAWAL`
+for internal settlement, which merchants do not use.
 
 ### 2.4 Currencies & countries
 
@@ -99,9 +79,9 @@ There are **two separate schemes**, split by URL prefix.
 
 ### 2.5 Payment methods (`payment_method`) — provider names by country
 
-The `payment_method` value is the **provider name string**. **Always fetch the
+The `payment_method` value is the **provider name** string. **Always fetch the
 authoritative list at runtime** via `GET /v1/payment/payment-methods/{countryCode}`.
-Known values at time of writing:
+Known values:
 
 | Country | `payment_method` values |
 |---------|-------------------------|
@@ -113,11 +93,11 @@ Known values at time of writing:
 | TG      | `t_money_tg` |
 | ML      | `orange_ml`, `moov_ml` |
 
-Mobile money only — **no card channel** is implemented.
+Mobile money only.
 
 ---
 
-## 3. Core payment endpoints (`X-API-KEY`)
+## 3. Payment endpoints (`X-API-KEY`)
 
 ### 3.1 `POST /v1/payment/collect` — collect from a customer (payer → merchant)
 
@@ -138,7 +118,7 @@ Headers: `X-API-KEY` (required), `X-Idempotency-Key` (optional),
 | `description` | string | ❌ | free text |
 | `customer_email` | string (email) | ❌ | if set, a receipt email is sent |
 | `fee_bearer` | string | ❌ | `MERCHANT` (default) / `CUSTOMER` |
-| `idempotency_key` | string | ❌ | alternative to the header (see §7) |
+| `idempotency_key` | string | ❌ | alternative to the header (see §5) |
 
 **Response — `PaymentResult`:**
 
@@ -151,7 +131,7 @@ Headers: `X-API-KEY` (required), `X-Idempotency-Key` (optional),
 | `transaction_status` | string | `SUCCESSFUL` / `FAILED` / `PENDING` |
 
 Mobile-money collects are typically **asynchronous**: expect `PENDING`, then a
-customer USSD/app prompt, then resolution via webhook or status polling (§6).
+customer USSD/app prompt, then resolution via webhook or status polling (§4).
 
 ### 3.2 `POST /v1/payment/payout` — pay out (merchant → recipient)
 
@@ -175,7 +155,7 @@ Headers: `X-API-KEY`. Path: your `transaction_id`.
 | `timestamp` | string/number | |
 | `transaction_status` | string | `SUCCESSFUL` / `FAILED` / `PENDING` |
 
-This is the **authoritative** way to confirm a transaction. Poll it (see §6) and
+This is the **authoritative** way to confirm a transaction. Poll it (see §4) and
 also use it to confirm webhooks.
 
 ### 3.4 `GET /v1/payment/fees` — fee estimate
@@ -196,97 +176,11 @@ country (the values you pass as `payment_method`).
 
 ---
 
-## 4. Public "hosted pay" flows
-
-These let a customer pay a **reference** (invoice/campaign/QR) without an API key.
-The merchant creates the invoice/campaign/QR (JWT, §5); the customer pays the
-public endpoint. Useful if you build your own pay page instead of using the hosted
-one.
-
-### 4.1 Invoices
-
-- `GET /v1/invoices/{reference}` → **`PublicInvoiceView`**: `reference`,
-  `merchantName`, `customerName`, `description`, `amount`, `currency`, `status`,
-  `expiresAt`, `paidAt`.
-- `GET /v1/invoices/{reference}/quote` → **`FeeQuote`** (fee-bearer split).
-- `POST /v1/invoices/{reference}/pay` → **`PaymentResult`**. Body
-  **`PayInvoiceRequest`**: `country_code`, `currency`, `mobile_number`,
-  `payment_method`, `beneficiary_name` (required — payer name), `customer_email`
-  (optional).
-
-### 4.2 Campaigns (crowdfunding)
-
-- `GET /v1/campaigns/{reference}` → **`PublicCampaignView`**: `reference`,
-  `merchantName`, `title`, `description`, `coverImageUrl`, `targetAmount`,
-  `raisedAmount`, `contributionCount`, `currency`, `status`, `deadline`,
-  `minContribution`, `publicUrl`, `qrImageUrl`, `disableReason`.
-- `GET /v1/campaigns/{reference}/quote?amount=` → **`FeeQuote`**.
-- `POST /v1/campaigns/{reference}/contribute` → **`PaymentResult`**. Body
-  **`ContributeRequest`**: `country_code`, `currency`, `amount` (min 100),
-  `mobile_number`, `payment_method`, `beneficiary_name`, `customer_email`.
-
-### 4.3 QR codes
-
-- `GET /v1/merchant/qrcode/payment-methods/{countryCode}` → provider list (public).
-- `GET /v1/merchant/qrcode/resolve/{qrReference}` → **`QRCodeResponse`**: `id`,
-  `merchantId`, `merchantAccountId`, `qrReference`, `label`, `currency`,
-  `fixedAmount`, `feeBearer`, `imageUrl`, `status`, `createdAt`.
-- `GET /v1/merchant/qrcode/quote/{qrReference}?amount=` → **`FeeQuote`**.
-- `POST /v1/merchant/qrcode/pay/{qrReference}` → **`PaymentResult`**. Body
-  **`QRPaymentRequest`**: `country_code`, `currency`, `amount` (ignored if the QR
-  has a `fixedAmount`), `mobile_number`, `payment_method`, `beneficiary_name`
-  (required), `customer_email`. The merchant API key is resolved server-side from
-  the QR reference — the client never sends it.
-- `GET /v1/merchant/qrcode/status/{transactionId}` → **public poll** (also used by
-  the invoice/campaign pay pages). Returns a plain map: `transactionId`, `status`,
-  `amount`, `currency`, `paymentMethod`, `mobileNumber`, `timestamp`. No
-  merchant/fee data exposed. Poll ~every 5s.
-
----
-
-## 5. Portal (JWT) flows
-
-### 5.1 Bulk payout — `POST /v1/merchant/bulk-payout`
-
-- **Auth: JWT bearer** (not `X-API-KEY`). Authorities: `MERCHANT_ADMIN` or
-  `INITIATE_PAYOUT`.
-- Body — **`BulkPayoutRequest`**:
-  - `merchant_account_id` (required)
-  - `encrypted_data` (required) — AES-encrypted, Base64-encoded JSON **array** of
-    payout items, encrypted with the shared `app.encryption.key`.
-  - `otp` (required)
-  - `batch_reference` (required) — idempotency key for the batch.
-- Each decrypted item — **`BulkPayoutItemDto`**: `line_ref`, `country_code`,
-  `currency`, `amount` (100–500000), `mobile_number`, `beneficiary_name`,
-  `payment_method`, `description`, `fee_bearer`.
-- Response — **`BulkPayoutResponse`** (HTTP **202**): `batch_id`,
-  `batch_reference`, `status` (`QUEUED`/`PARTIAL`/`REJECTED`), `total_items`,
-  `queued_count`, `failed_count`, `items[]` (`BulkPayoutItemResult`), `stats`,
-  `submitted_at`, `message`.
-- List/detail: `GET /v1/merchant/bulk-payout` (paginated),
-  `GET /v1/merchant/bulk-payout/{batchId}`.
-
-> Because bulk payout needs client-side AES + an OTP, SDKs document it and show the
-> encryption recipe, but do not bundle interactive OTP handling.
-
-### 5.2 Creation endpoints (JWT) — documented, optional in SDK via `bearerToken`
-
-- `POST /v1/merchant/invoices` — **`CreateInvoiceRequest`**: `merchantAccountId`,
-  `customerName`, `customerEmail`, `customerPhone`, `description`, `amount`
-  (min 100), `currency`, `expiresAt` (optional), `feeBearer` → `Invoice`.
-- `POST /v1/merchant/campaigns` — **`CreateCampaignRequest`**: `merchantAccountId`,
-  `title`, `description`, `coverImageUrl`, `targetAmount` (min 100), `currency`,
-  `deadline`, `minContribution`, `feeBearer` → `PaymentCampaign`.
-- `POST /v1/merchant/qrcode/generate` — **`QRCodeRequest`**: `merchantAccountId`,
-  `label`, `fixedAmount` (optional), `currency`, `feeBearer` → `QRCodeResponse`.
-
----
-
-## 6. Confirming a transaction: polling + webhooks
+## 4. Confirming a transaction: polling + webhooks
 
 Mobile-money is asynchronous. Two ways to learn the outcome:
 
-1. **Webhook** (push) — see §8. Treat as a **hint**; always confirm via status.
+1. **Webhook** (push) — see §6.
 2. **Status polling** (pull) — `GET /v1/payment/status/{transactionId}`.
 
 **Recommended poll schedule** (implemented by the SDK `waitForCompletion` helper):
@@ -296,16 +190,15 @@ start after **5s**, then exponential backoff capped at **60s**, **give up after
 
 ---
 
-## 7. Idempotency
+## 5. Idempotency
 
 - Header: **`X-Idempotency-Key: <key>`** on `POST /v1/payment/collect` and
   `POST /v1/payment/payout`.
 - Resolution order server-side: request header → body `idempotency_key` → an
-  auto-generated deterministic key `auto:{apiKey}:{transactionId}`.
+  auto-generated deterministic key based on your API key + `transaction_id`.
 - On replay within the retention window (~24h) the **original** `PaymentResult` is
   returned, with response headers `X-Idempotency-Replay: true` (and
   `X-Idempotency-Key-Auto` when the key was auto-generated).
-- Bulk payout uses `batch_reference` as its idempotency key.
 
 SDK behavior: always send `X-Idempotency-Key`. If the caller doesn't supply one,
 default it to the `transaction_id` (stable + unique per attempt). Surface the
@@ -313,32 +206,32 @@ replay headers to the caller.
 
 ---
 
-## 8. Webhooks (outbound, Marvin Pay → your server)
+## 6. Webhooks (outbound, Marvin Pay → your server)
 
-### 8.1 Registration
+### 6.1 Registration
 
 The callback URL is `webhookUrl` on the merchant account (must be HTTPS),
-configured via the portal / account update. The signing secret is `webhookSecret`.
+configured via the portal / account update.
 
-### 8.2 Delivery mechanics
+### 6.2 Delivery mechanics
 
 - Method: `POST` your `webhookUrl`, JSON body. **Success = any 2xx.**
 - Retry: a scheduler retries non-2xx every ~30s with backoff `30s × 2^attempt`
   (≈ 30s, 1m, 2m, 4m, 8m). After **5 attempts** the delivery is marked `DEAD`.
-- Delivery is idempotent per `transactionId` — you may receive the same event more
-  than once; **dedupe on `transactionId` + `status`.**
+- Delivery is **at-least-once** — you may receive the same event more than once;
+  **dedupe on `transactionId` + `status`.**
 
-### 8.3 Headers
+### 6.3 Headers
 
 - `Content-Type: application/json`
 - `X-Webhook-Attempt` — retry attempt number
 - `X-Marvin-Timestamp` — epoch milliseconds
 - `X-Webhook-Nonce` — UUID (replay guard)
 - `X-Webhook-Delivery-Id` — unique per delivery
-- `X-Webhook-Signature` — **only sent when `webhookSecret` is set** — format
-  `sha256=<hex>` (HMAC-SHA256). **See §8.5 for current status.**
+- `X-Webhook-Signature` — HMAC-SHA256 signature, format `sha256=<hex>`, sent when a
+  webhook secret is configured on your account (see §6.5).
 
-### 8.4 Payload
+### 6.4 Payload
 
 ```json
 {
@@ -361,36 +254,26 @@ configured via the portal / account update. The signing secret is `webhookSecret
 
 - `event`: `transaction.success | transaction.failed | transaction.pending | transaction.cancel`
 - `status`: `SUCCESS | FAILED | PENDING | CANCEL`
-- Direction-aware amount split: **credit/collect** payloads carry
-  `amountChargedToCustomer` + `amountCreditedToMerchant`; **debit/payout** payloads
+- Direction-aware amount split: **collect** payloads carry
+  `amountChargedToCustomer` + `amountCreditedToMerchant`; **payout** payloads
   carry `amountDebitedFromMerchant` + `amountReceivedByRecipient`.
 
-### 8.5 ⚠️ Current signature status — READ THIS
+### 6.5 Securing your webhook endpoint
 
-As of this writing, outbound webhooks are effectively **UNSIGNED**:
-
-- `webhookSecret` is not populated by any code path, so `X-Webhook-Signature` is
-  **not sent** today.
-- The HMAC scheme (base string + timestamp field name) is not yet aligned with the
-  SDK verifier, so signature verification is **not usable in production yet**.
-
-**Guidance for merchants (and what the SDK docs say):**
-
-1. Do **not** rely on the signature as your only trust anchor right now.
-2. On every webhook, **confirm out-of-band** with
+1. **Verify the signature** — when a webhook secret is configured on your account,
+   Marvin Pay sends `X-Webhook-Signature` (`sha256=<hex>`), an HMAC-SHA256 over the
+   raw request body. Verify it with your webhook secret using the `WebhookVerifier`
+   shipped in each SDK.
+2. **Confirm out-of-band** — on every webhook, confirm the outcome with
    `GET /v1/payment/status/{transactionId}` before acting on it (fulfilling orders,
-   crediting users, etc.).
-3. Restrict your webhook endpoint (allowlist Marvin Pay egress IPs `⟨CONFIRM⟩`,
-   use a hard-to-guess URL path).
-4. The SDKs ship a `WebhookVerifier` implementing the **intended** scheme (HMAC-
-   SHA256 over the raw request body, compare against `X-Webhook-Signature` minus
-   the `sha256=` prefix, constant-time). It is safe to wire in now — it becomes
-   effective automatically once backend signing is enabled. Until then, keep the
-   status-confirmation step regardless.
+   crediting users, etc.). This is the authoritative source of truth.
+3. **Dedupe** — deliveries are at-least-once; dedupe on `transactionId` + `status`.
+4. **Lock down the endpoint** — use HTTPS and a hard-to-guess URL path. Contact
+   Marvin Pay support for the current webhook source IP ranges to allowlist.
 
 ---
 
-## 9. Errors
+## 7. Errors
 
 - `200` / `202` — accepted. For async collects/payouts, inspect
   `transaction_status` (often `PENDING`) — a 200 does **not** mean money moved.
@@ -398,37 +281,29 @@ As of this writing, outbound webhooks are effectively **UNSIGNED**:
   currency/country mismatch).
 - `401` — missing/unknown `X-API-KEY`.
 - `403` — account blocked/inactive, or origin/IP not whitelisted (prod).
-- `429` — rate limited (see §11).
-- Error body shape: `⟨CONFIRM⟩` exact envelope — observe live; may be a Spring
-  error object (`timestamp`/`status`/`error`/`message`/`path`) or a `PaymentResult`
-  with a non-2xx `status` + `message`. SDKs should surface HTTP status +
-  `message` + the raw body.
+- `429` — rate limited (see §9).
+- Error responses return the appropriate HTTP status code and a JSON body
+  containing a human-readable `message`. SDKs surface the HTTP status, the
+  `message`, and the raw body.
 
 ---
 
-## 10. Sandbox / testing
+## 8. Testing
 
-- "Sandbox" is **magic phone numbers**, not a separate host, and is gated to the
-  backend `dev` profile:
-  - `237600000001`–`237600000004` and `237670000001`–`237670000004` produce
-    instant/delayed `SUCCESS`/`FAILED`.
-  - Only the **hosted pay** flows (invoice/campaign/QR) honor the short-circuit;
-    direct API collects (references prefixed `MARVIN-…`) always hit the real
-    gateway.
-- Which externally reachable host runs with sandbox behavior for merchants:
-  `⟨CONFIRM⟩`.
+Sandbox/test access, test credentials, and test phone numbers are provided by
+Marvin Pay on request — contact your Marvin Pay account manager. Run integrations
+against the test environment they provide before going live.
 
 ---
 
-## 11. Rate limits
+## 9. Rate limits
 
-- The collect endpoint is locally rate-limited to ~**100 requests/min per API
-  key** (plus a global `RateLimitService`). Over the limit ⇒ `429`. SDKs should
-  treat `429` as retryable with backoff (respect `Retry-After` if present).
+The payment endpoints are rate-limited per API key. Over the limit ⇒ `429`. SDKs
+treat `429` as retryable with backoff (respecting `Retry-After` if present).
 
 ---
 
-## 12. Quick reference — the programmatic surface (`X-API-KEY`)
+## 10. Quick reference
 
 | Method | Path (add `/api` on the wire) | Body → Response |
 |--------|-------------------------------|-----------------|

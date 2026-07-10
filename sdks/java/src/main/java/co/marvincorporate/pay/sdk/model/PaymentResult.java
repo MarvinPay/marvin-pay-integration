@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Response from {@code collect}, {@code payout}, and the hosted-pay endpoints
- * (invoice pay, campaign contribute, QR pay).
+ * Response from {@code collect} and {@code payout}.
  *
  * <p><b>A 2xx does not mean money moved.</b> Mobile-money collects/payouts are
  * typically asynchronous: expect {@link #getTransactionStatus()} to be

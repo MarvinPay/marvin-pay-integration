@@ -4,24 +4,17 @@
  * Marvin Pay — webhook helpers (zero runtime dependencies, Node 18+).
  *
  * ============================================================================
- *  READ THIS FIRST — WEBHOOKS ARE EFFECTIVELY UNSIGNED TODAY.
+ *  WEBHOOK VERIFICATION + THE MANDATORY CONFIRM STEP
  * ============================================================================
  *
- * Per CONTRACT.md §8.5, as of this writing outbound webhooks are UNSIGNED:
+ * `verifyWebhookSignature` checks the `X-Webhook-Signature` header (HMAC-SHA256
+ * over the raw request body, hex-encoded, sent as `sha256=<hex>`). Configure a
+ * webhook secret on your account to enable signed deliveries.
  *
- *   - `webhookSecret` is not populated by any backend code path, so the
- *     `X-Webhook-Signature` header is NOT sent today.
- *   - The intended HMAC scheme (base string + which timestamp field) is not yet
- *     finalized/aligned with this verifier, so signature verification is NOT
- *     usable in production yet.
+ * Because deliveries are at-least-once, the signature is never your only trust
+ * anchor. Regardless of the signature, on EVERY webhook:
  *
- * Therefore `verifyWebhookSignature` below is effectively INERT right now: with
- * no secret configured and no signature header arriving, it will return `false`.
- * That is intentional. Do NOT gate your webhook handling solely on it yet.
- *
- * WHAT YOU MUST DO INSTEAD (and forever, even after signing ships):
- *
- *   1. Treat every webhook as an untrusted HINT, not proof.
+ *   1. Treat every webhook as a HINT, not proof.
  *   2. On each webhook, CONFIRM OUT-OF-BAND via
  *      `GET /v1/payment/status/{transactionId}` (client.getStatus) BEFORE you
  *      act on it (fulfilling orders, crediting users, etc.).
@@ -29,11 +22,10 @@
  *      more than once (CONTRACT §8.2).
  *   4. Restrict your webhook endpoint (hard-to-guess path, IP allowlist).
  *
- * This verifier implements the INTENDED scheme (HMAC-SHA256 over the raw request
- * body, compared against `X-Webhook-Signature` minus the `sha256=` prefix, using
- * a constant-time compare). It is safe to wire in now: it becomes effective
- * automatically once the backend starts signing AND you set the secret. Until
- * then, keep the status-confirmation step regardless of what it returns.
+ * This verifier computes HMAC-SHA256 over the raw request body and compares it
+ * (constant-time) against `X-Webhook-Signature` minus the `sha256=` prefix. It
+ * returns `false` when the secret or signature is missing — so keep the
+ * status-confirmation step regardless of what it returns.
  * ============================================================================
  */
 
@@ -42,22 +34,21 @@ const crypto = require('node:crypto');
 /**
  * Verify an HMAC-SHA256 webhook signature.
  *
- * IMPORTANT: inert today (see the file header). Returns `false` when either the
- * secret or the signature header is missing — which is the current production
- * reality — so callers must still confirm via `getStatus`.
+ * Returns `false` when either the secret or the signature header is missing, so
+ * callers must still confirm via `getStatus` (deliveries are at-least-once).
  *
  * @param {string|Buffer} rawBody         The EXACT raw request body bytes/string.
  *   You must capture this before any JSON parsing/re-serialization, otherwise the
  *   HMAC will not match (whitespace/key-order differences change the bytes).
  * @param {string|null|undefined} signatureHeader  The `X-Webhook-Signature`
  *   header value, e.g. `sha256=<hex>`. A leading `sha256=` is stripped.
- * @param {string} secret                 Your account `webhookSecret`.
+ * @param {string} secret                 Your account webhook secret.
  * @returns {boolean} true only if the signature is present and valid.
  */
 function verifyWebhookSignature(rawBody, signatureHeader, secret) {
-  // No secret configured (the norm today) → cannot verify. Confirm via getStatus.
+  // No secret configured → cannot verify. Confirm via getStatus.
   if (!secret) return false;
-  // No signature header (the norm today) → nothing to verify against.
+  // No signature header → nothing to verify against.
   if (!signatureHeader) return false;
 
   const provided = String(signatureHeader)

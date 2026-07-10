@@ -7,8 +7,8 @@ return [
     |--------------------------------------------------------------------------
     | Merchant API key
     |--------------------------------------------------------------------------
-    | Sent as `X-API-KEY` on all /v1/payment/** calls. Issued on your
-    | MerchantAccounts record.
+    | Sent as `X-API-KEY` on all /v1/payment/** calls. Obtain it from the
+    | merchant portal or your Marvin Pay account manager.
     */
     'api_key' => env('MARVIN_API_KEY'),
 
@@ -23,19 +23,10 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Portal JWT (optional)
-    |--------------------------------------------------------------------------
-    | Sent as `Authorization: Bearer` for JWT-gated endpoints. The SDK does not
-    | perform the interactive OTP login.
-    */
-    'bearer_token' => env('MARVIN_BEARER_TOKEN'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Webhook signing secret
     |--------------------------------------------------------------------------
-    | Your account's `webhookSecret`. NOTE: webhooks are effectively UNSIGNED
-    | today (see the middleware and README) — always confirm via getStatus().
+    | Your account's webhook secret. Configure it to enable signed webhook
+    | deliveries; always confirm via getStatus() regardless.
     */
     'webhook_secret' => env('MARVIN_WEBHOOK_SECRET'),
 

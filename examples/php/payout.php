@@ -30,7 +30,7 @@ try {
         'country_code'     => 'CM',
         'currency'         => 'XAF',
         'amount'           => 2500,      // whole number, 100–500000
-        'mobile_number'    => '237670000002',
+        'mobile_number'    => '<your-test-msisdn>',
         'payment_method'   => 'mtn_cm',
         'transaction_id'   => $transactionId,
         'beneficiary_name' => 'Jane Doe',

@@ -13,7 +13,7 @@ Quickstart::
         "country_code": "CM",
         "currency": "XAF",
         "amount": 5000,
-        "mobile_number": "237670000001",
+        "mobile_number": "<your-test-msisdn>",
         "payment_method": "mtn_cm",
         "transaction_id": "order-1001",
     })

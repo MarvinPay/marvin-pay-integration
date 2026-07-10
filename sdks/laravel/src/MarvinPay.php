@@ -136,54 +136,6 @@ class MarvinPay
         return $last ?? $this->getStatus($transactionId);
     }
 
-    // ─────────────────────────────────────────────────────────────────────
-    //  Public "hosted pay" flows
-    // ─────────────────────────────────────────────────────────────────────
-
-    /**
-     * Pay a public invoice. `POST /v1/invoices/{reference}/pay`.
-     *
-     * @param array<string,mixed> $payInvoiceRequest PayInvoiceRequest
-     * @return array<string,mixed> PaymentResult
-     */
-    public function payInvoice(string $reference, array $payInvoiceRequest): array
-    {
-        return $this->post('/v1/invoices/' . rawurlencode($reference) . '/pay', $this->normalizeAmount($payInvoiceRequest));
-    }
-
-    /**
-     * Contribute to a public campaign. `POST /v1/campaigns/{reference}/contribute`.
-     *
-     * @param array<string,mixed> $contributeRequest ContributeRequest
-     * @return array<string,mixed> PaymentResult
-     */
-    public function contributeCampaign(string $reference, array $contributeRequest): array
-    {
-        return $this->post('/v1/campaigns/' . rawurlencode($reference) . '/contribute', $this->normalizeAmount($contributeRequest));
-    }
-
-    /**
-     * Pay a QR code. `POST /v1/merchant/qrcode/pay/{qrReference}`.
-     *
-     * @param array<string,mixed> $qrPaymentRequest QRPaymentRequest
-     * @return array<string,mixed> PaymentResult
-     */
-    public function payQr(string $qrReference, array $qrPaymentRequest): array
-    {
-        return $this->post('/v1/merchant/qrcode/pay/' . rawurlencode($qrReference), $this->normalizeAmount($qrPaymentRequest));
-    }
-
-    /**
-     * Public poll for a hosted-pay transaction.
-     * `GET /v1/merchant/qrcode/status/{transactionId}`.
-     *
-     * @return array<string,mixed>
-     */
-    public function getQrStatus(string $transactionId): array
-    {
-        return $this->get('/v1/merchant/qrcode/status/' . rawurlencode($transactionId));
-    }
-
     /**
      * Headers from the most recent response (lowercased keys). Use to read
      * `x-idempotency-replay` / `x-idempotency-key-auto`.
@@ -210,9 +162,6 @@ class MarvinPay
 
         if (!empty($this->config['api_key'])) {
             $request = $request->withHeaders(['X-API-KEY' => $this->config['api_key']]);
-        }
-        if (!empty($this->config['bearer_token'])) {
-            $request = $request->withToken($this->config['bearer_token']);
         }
 
         return $request;

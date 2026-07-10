@@ -6,8 +6,7 @@ API contract (``CONTRACT.md``). Nothing is invented.
 
 Key facts baked into this client (see the contract for detail):
 
-- Auth is by ``X-API-KEY`` for the ``/v1/payment/**`` surface; an optional
-  ``Authorization: Bearer`` JWT unlocks portal (creation / bulk) endpoints.
+- Auth is by ``X-API-KEY`` for the ``/v1/payment/**`` surface.
 - Currency and country always travel together on every money request.
 - Amounts are whole numbers (XAF/XOF have no minor units); range 100..500000.
 - Mobile-money collects/payouts are asynchronous: a 200/202 does NOT mean money
@@ -119,8 +118,6 @@ class MarvinPayClient:
             May be empty for purely public "hosted pay" flows.
         base_url: API base URL, including the ``/api`` context path. Defaults to
             production. Use ``http://localhost:9090/api`` for local dev.
-        bearer_token: Optional portal JWT, sent as ``Authorization: Bearer``.
-            Required only for portal / creation / bulk-payout endpoints.
         timeout: Per-request timeout in seconds.
     """
 
@@ -128,12 +125,10 @@ class MarvinPayClient:
         self,
         api_key,
         base_url=DEFAULT_BASE_URL,
-        bearer_token=None,
         timeout=30,
     ):
         self.api_key = api_key
         self.base_url = (base_url or DEFAULT_BASE_URL).rstrip("/")
-        self.bearer_token = bearer_token
         self.timeout = timeout
         self._session = requests.Session()
         # Response headers from the most recent call. After collect/payout, look
@@ -288,73 +283,6 @@ class MarvinPayClient:
         )
 
     # ------------------------------------------------------------------ #
-    # Public "hosted pay" flows (no API key required by the server)       #
-    # ------------------------------------------------------------------ #
-
-    def pay_invoice(self, reference, payment_request):
-        """Pay a public invoice by reference.
-
-        ``POST /v1/invoices/{reference}/pay``. Body is a ``PayInvoiceRequest``:
-        ``country_code``, ``currency``, ``mobile_number``, ``payment_method``,
-        ``beneficiary_name`` (required, payer name), ``customer_email`` (optional).
-        The amount is fixed by the invoice.
-
-        Returns:
-            The ``PaymentResult`` dict.
-        """
-        path = "/v1/invoices/" + quote(str(reference), safe="") + "/pay"
-        return self._request(
-            "POST", path, json_body=self._prepare_body(payment_request)
-        )
-
-    def contribute_campaign(self, reference, payment_request):
-        """Contribute to a public crowdfunding campaign by reference.
-
-        ``POST /v1/campaigns/{reference}/contribute``. Body is a
-        ``ContributeRequest``: ``country_code``, ``currency``, ``amount``
-        (min 100), ``mobile_number``, ``payment_method``, ``beneficiary_name``,
-        ``customer_email``.
-
-        Returns:
-            The ``PaymentResult`` dict.
-        """
-        path = "/v1/campaigns/" + quote(str(reference), safe="") + "/contribute"
-        return self._request(
-            "POST", path, json_body=self._prepare_body(payment_request)
-        )
-
-    def pay_qr(self, qr_reference, payment_request):
-        """Pay a merchant QR code by reference.
-
-        ``POST /v1/merchant/qrcode/pay/{qrReference}``. Body is a
-        ``QRPaymentRequest``: ``country_code``, ``currency``, ``amount`` (ignored
-        if the QR has a ``fixedAmount``), ``mobile_number``, ``payment_method``,
-        ``beneficiary_name`` (required), ``customer_email``. The merchant API key
-        is resolved server-side from the QR reference.
-
-        Returns:
-            The ``PaymentResult`` dict.
-        """
-        path = "/v1/merchant/qrcode/pay/" + quote(str(qr_reference), safe="")
-        return self._request(
-            "POST", path, json_body=self._prepare_body(payment_request)
-        )
-
-    def get_qr_status(self, transaction_id):
-        """Public poll for a hosted-pay transaction.
-
-        ``GET /v1/merchant/qrcode/status/{transactionId}``. Also used by the
-        invoice / campaign pay pages. Returns a plain map (``transactionId``,
-        ``status``, ``amount``, ``currency``, ``paymentMethod``, ``mobileNumber``,
-        ``timestamp``) with no merchant/fee data. Poll ~every 5s.
-
-        Returns:
-            A dict with the public status fields.
-        """
-        path = "/v1/merchant/qrcode/status/" + quote(str(transaction_id), safe="")
-        return self._request("GET", path, allow_retry=True)
-
-    # ------------------------------------------------------------------ #
     # Internals                                                           #
     # ------------------------------------------------------------------ #
 
@@ -374,8 +302,6 @@ class MarvinPayClient:
         }
         if self.api_key:
             headers["X-API-KEY"] = self.api_key
-        if self.bearer_token:
-            headers["Authorization"] = f"Bearer {self.bearer_token}"
         return headers
 
     def _request(

@@ -99,54 +99,6 @@ export interface FeeEstimateResponse {
   [key: string]: unknown;
 }
 
-/** Body for POST /v1/invoices/{reference}/pay (no `amount`; invoice fixes it). */
-export interface PayInvoiceRequest {
-  country_code: string;
-  currency: string;
-  mobile_number: string;
-  payment_method: string;
-  /** Required — payer name. */
-  beneficiary_name: string;
-  customer_email?: string;
-}
-
-/** Body for POST /v1/campaigns/{reference}/contribute. */
-export interface ContributeRequest {
-  country_code: string;
-  currency: string;
-  /** Whole number, min 100. */
-  amount: number;
-  mobile_number: string;
-  payment_method: string;
-  beneficiary_name: string;
-  customer_email?: string;
-}
-
-/** Body for POST /v1/merchant/qrcode/pay/{qrReference}. */
-export interface QRPaymentRequest {
-  country_code: string;
-  currency: string;
-  /** Whole number. Ignored server-side if the QR has a fixedAmount. */
-  amount?: number;
-  mobile_number: string;
-  payment_method: string;
-  /** Required. */
-  beneficiary_name: string;
-  customer_email?: string;
-}
-
-/** Public poll response from GET /v1/merchant/qrcode/status/{transactionId}. */
-export interface QrStatusResponse {
-  transactionId: string;
-  status: string;
-  amount: number;
-  currency: string;
-  paymentMethod: string;
-  mobileNumber: string;
-  timestamp: string | number;
-  [key: string]: unknown;
-}
-
 /** Outbound webhook payload (see CONTRACT §8.4). */
 export interface WebhookEvent {
   event: WebhookEventName;
@@ -181,8 +133,6 @@ export interface MarvinPayClientOptions {
   apiKey?: string;
   /** Defaults to `https://api.marvincorporate.co/api`. Must include `/api`. */
   baseUrl?: string;
-  /** Optional portal JWT, sent as `Authorization: Bearer`. */
-  bearerToken?: string;
   /** Per-request timeout in ms (default 30000). */
   timeoutMs?: number;
 }
@@ -221,7 +171,6 @@ export declare class MarvinPayError extends Error {
 
 export declare class MarvinPayClient {
   apiKey?: string;
-  bearerToken?: string;
   baseUrl: string;
   timeoutMs: number;
 
@@ -238,12 +187,6 @@ export declare class MarvinPayClient {
     opts?: WaitForCompletionOptions,
   ): Promise<TransactionStatusResponse>;
 
-  // Public hosted-pay flows (no auth)
-  payInvoice(reference: string, body: PayInvoiceRequest): Promise<PaymentResult>;
-  contributeCampaign(reference: string, body: ContributeRequest): Promise<PaymentResult>;
-  payQr(reference: string, body: QRPaymentRequest): Promise<PaymentResult>;
-  getQrStatus(transactionId: string): Promise<QrStatusResponse>;
-
   // Status normalization
   static normalizeStatus(status: string | null | undefined): NormalizedStatus;
   normalizeStatus(status: string | null | undefined): NormalizedStatus;
@@ -254,9 +197,11 @@ export declare class MarvinPayClient {
 // ---------------------------------------------------------------------------
 
 /**
- * Verify an HMAC-SHA256 webhook signature (constant-time). INERT today: webhooks
- * are unsigned in production, so this returns false until backend signing ships.
- * Always confirm via `getStatus` regardless. See CONTRACT §8.5.
+ * Verify an HMAC-SHA256 webhook signature (constant-time) over the raw request
+ * body, compared against `X-Webhook-Signature` (`sha256=<hex>`). Returns false
+ * when the secret or signature is missing. Configure a webhook secret on your
+ * account to enable signed deliveries. Always confirm via `getStatus` regardless
+ * (deliveries are at-least-once). See CONTRACT §8.5.
  */
 export declare function verifyWebhookSignature(
   rawBody: string | Buffer,

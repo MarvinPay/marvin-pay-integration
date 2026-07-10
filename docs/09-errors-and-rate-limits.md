@@ -4,7 +4,7 @@
 
 > **A 200/202 does not mean money moved.** For async collects/payouts, a 2xx means
 > the request was **accepted** — you must inspect `transaction_status` (often
-> `PENDING`) and confirm via [Transaction Status](09-transaction-status.md).
+> `PENDING`) and confirm via [Transaction Status](05-transaction-status.md).
 
 | Status | Meaning | What to do |
 |--------|---------|-----------|
@@ -18,13 +18,9 @@ See [Authentication](02-authentication.md) for the `401` / `403` conditions.
 
 ## Error body shape
 
-The exact error envelope is **`⟨CONFIRM⟩`** — observe it live. It may be either:
-
-- a Spring error object (`timestamp` / `status` / `error` / `message` / `path`), or
-- a `PaymentResult` with a non-2xx `status` field plus a `message`.
-
-Your integration should surface the **HTTP status + `message` + the raw body** so
-you can diagnose either shape.
+Error responses return the appropriate HTTP status code and a JSON body containing
+a human-readable `message`. Your integration should surface the **HTTP status +
+`message` + the raw body** so you can diagnose issues.
 
 ## Rate limits
 
@@ -45,4 +41,4 @@ you can diagnose either shape.
 | `PENDING` result | Not a retry | **Poll** status instead — do not resend the payment |
 
 Reusing the same idempotency key on a retry guarantees a replay of the original
-result instead of a second money movement. See [Idempotency](10-idempotency.md).
+result instead of a second money movement. See [Idempotency](06-idempotency.md).

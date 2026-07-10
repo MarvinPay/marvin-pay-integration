@@ -8,21 +8,20 @@ import java.security.MessageDigest;
 /**
  * Verifies the {@code X-Webhook-Signature} header on inbound Marvin Pay webhooks.
  *
- * <p>The intended scheme is <b>HMAC-SHA256 over the raw request body</b>, hex-encoded,
+ * <p>The scheme is <b>HMAC-SHA256 over the raw request body</b>, hex-encoded,
  * compared (constant-time) against the header value with its {@code sha256=} prefix
  * stripped.
  *
- * <h2>⚠️ Webhooks are effectively UNSIGNED today — read this</h2>
- * As of this writing the backend does <b>not</b> populate {@code webhookSecret}, so
- * {@code X-Webhook-Signature} is <b>not sent</b>, and the exact HMAC base string is
- * not yet finalized. This verifier implements the <i>intended</i> scheme and is
- * inert until signing is enabled server-side — it is safe to wire in now and will
- * start doing real work automatically once the backend begins signing.
+ * <h2>Verify, then always confirm</h2>
+ * Marvin Pay signs webhook deliveries with this signature when your account has a
+ * webhook secret configured. This verifier returns {@code false} when the secret or
+ * signature is missing. Because deliveries are at-least-once, the signature is never
+ * your only trust anchor.
  *
  * <p><b>Regardless of signature status, always confirm out-of-band</b> via
  * {@code GET /v1/payment/status/{transactionId}} before acting on a webhook
  * (fulfilling an order, crediting a user, etc.). Never treat the webhook payload
- * — or this signature check — as your sole trust anchor today.
+ * — or this signature check — as your sole trust anchor.
  */
 public final class WebhookVerifier {
 
@@ -40,10 +39,9 @@ public final class WebhookVerifier {
      *                        a parsed object first, or the HMAC will not match.
      * @param signatureHeader the {@code X-Webhook-Signature} header value, e.g.
      *                        {@code sha256=abc123...}. The {@code sha256=} prefix is optional.
-     * @param secret          your account's {@code webhookSecret}.
+     * @param secret          your account's webhook secret.
      * @return {@code true} only if the computed HMAC matches. Returns {@code false} for any
-     *         {@code null} argument (including a missing header — which is the current
-     *         reality, since the backend does not sign yet).
+     *         {@code null} argument (including a missing header).
      */
     public static boolean verify(String rawBody, String signatureHeader, String secret) {
         if (rawBody == null) {

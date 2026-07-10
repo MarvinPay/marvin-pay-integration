@@ -2,9 +2,10 @@
 
 Demonstrates the recommended verify -> CONFIRM -> dedupe -> 200 flow.
 
-IMPORTANT (contract §8.5): outbound webhooks are effectively UNSIGNED today, so
-`verify_signature` is currently inert. The real trust anchor is confirming the
-transaction out-of-band via `get_status`. This example always does that.
+IMPORTANT (contract §8.5): Marvin Pay signs webhook deliveries with an HMAC-SHA256
+signature in the `X-Webhook-Signature` header when your account has a webhook secret
+configured. Because deliveries are at-least-once, the real trust anchor is still
+confirming the transaction out-of-band via `get_status`. This example always does that.
 
 Flask is a DEV-ONLY example dependency (it is NOT a dependency of the SDK):
     pip install flask
@@ -12,7 +13,7 @@ Flask is a DEV-ONLY example dependency (it is NOT a dependency of the SDK):
 Config is read from the environment:
     MARVIN_API_KEY        (required)  used to confirm via get_status
     MARVIN_BASE_URL       (optional)  defaults to production
-    MARVIN_WEBHOOK_SECRET (optional)  your webhookSecret (unused until signing lands)
+    MARVIN_WEBHOOK_SECRET (optional)  your webhook secret (enables signed deliveries)
     PORT                  (optional)  default 5000
 
 Usage:
@@ -52,8 +53,8 @@ def marvin_webhook():
     #    re-serialize parsed JSON before verifying).
     raw_body = request.get_data()
 
-    # 2. Verify the signature. This is INERT today (no signature is sent), so we
-    #    do NOT reject on a failed check — we rely on step 4 instead.
+    # 2. Verify the signature. It returns False when the secret/signature is
+    #    missing, so we do NOT reject on a failed check — we rely on step 4 instead.
     signature = request.headers.get("X-Webhook-Signature")
     signature_ok = verify_signature(raw_body, signature, WEBHOOK_SECRET)
     app.logger.info("signature present/valid: %s", signature_ok)

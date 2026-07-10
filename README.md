@@ -6,8 +6,8 @@ Pay** across West & Central Africa (XAF / XOF). Written guide + drop-in SDKs for
 collection.
 
 > **Grounded in the real API.** Every endpoint, field, header, and enum in this
-> kit is copied from the live Marvin Pay backend — see [`CONTRACT.md`](CONTRACT.md),
-> the source of truth all the SDKs are built from.
+> kit matches the Marvin Pay API — see [`CONTRACT.md`](CONTRACT.md), the API
+> reference the SDKs follow.
 
 ---
 
@@ -15,13 +15,13 @@ collection.
 
 | Folder | What |
 |--------|------|
-| [`docs/`](docs/) | The integration guide — auth, collect, payout, invoices, campaigns, QR, webhooks, idempotency, fees, errors, sandbox. Start here. |
+| [`docs/`](docs/) | The integration guide — auth, collect, payout, transaction status, idempotency, fees, webhooks, errors, testing. Start here. |
 | [`sdks/node/`](sdks/node/) | Node.js (18+) client, webhook verifier, TypeScript types. |
 | [`sdks/php/`](sdks/php/) | Zero-dependency PHP 8.1+ client + webhook verifier. |
 | [`sdks/laravel/`](sdks/laravel/) | Laravel 10/11 package: config, service, facade, webhook middleware/controller. |
 | [`sdks/java/`](sdks/java/) | Java 17 client (JDK HttpClient + Jackson) + webhook verifier. |
 | [`sdks/python/`](sdks/python/) | Python 3.9+ client (`requests`) + webhook verifier. |
-| [`examples/`](examples/) | Runnable per-language examples: collect, payout, poll status, webhook server, hosted pay. |
+| [`examples/`](examples/) | Runnable per-language examples: collect, payout, poll status, webhook server. |
 | [`postman/`](postman/) | Postman collection + environment for the merchant API. |
 | [`CONTRACT.md`](CONTRACT.md) | The authoritative API reference. |
 
@@ -80,31 +80,28 @@ console.log(final.transaction_status); // SUCCESSFUL | FAILED
 
 - **Mobile money is asynchronous.** A `200` on collect does **not** mean money
   moved — you'll usually get `PENDING`. Confirm the outcome via the **status**
-  endpoint or a **webhook**. See [`docs/09-transaction-status.md`](docs/09-transaction-status.md).
+  endpoint or a **webhook**. See [`docs/05-transaction-status.md`](docs/05-transaction-status.md).
 - **Always send an idempotency key** on collect/payout so retries don't double-charge.
-  See [`docs/10-idempotency.md`](docs/10-idempotency.md).
+  See [`docs/06-idempotency.md`](docs/06-idempotency.md).
 - **Currency and country always travel together.** `XAF` spans six countries with
   different rules — every request carries both `currency` and `country_code`.
 - **Amounts are whole numbers**, 100–500000. XAF/XOF have no minor units.
 - **`fee_bearer`** decides who pays the fee — `MERCHANT` (default) or `CUSTOMER`.
-  See [`docs/11-fees-and-fee-bearer.md`](docs/11-fees-and-fee-bearer.md).
+  See [`docs/07-fees-and-fee-bearer.md`](docs/07-fees-and-fee-bearer.md).
 
-## ⚠️ Webhooks: current security status
+## Handling webhooks safely
 
-Outbound webhooks are delivered **unsigned today** (`webhookSecret` is not yet
-populated server-side, so the `X-Webhook-Signature` header is not sent). **Do not
-trust a webhook on its own right now** — on every webhook, confirm out-of-band with
-`GET /v1/payment/status/{transactionId}` before acting, and dedupe on
-`transactionId` + `status`. The SDKs ship a webhook verifier for the intended
-HMAC-SHA256 scheme so you're forward-compatible the moment signing is enabled.
-Full detail in [`docs/12-webhooks.md`](docs/12-webhooks.md).
+Treat webhooks defensively:
 
-## To confirm before publishing
+1. **Verify the signature** — when a webhook secret is configured on your account,
+   Marvin Pay sends `X-Webhook-Signature` (`sha256=<hex>`, HMAC-SHA256 over the raw
+   body). Verify it with the `WebhookVerifier` shipped in each SDK.
+2. **Confirm out-of-band** — on every webhook, confirm the outcome via
+   `GET /v1/payment/status/{transactionId}` before acting. It is the authoritative
+   source of truth and protects you regardless of transport.
+3. **Dedupe** — deliveries are at-least-once; dedupe on `transactionId` + `status`.
 
-A few facts must be filled in by the Marvin Pay team (marked `⟨CONFIRM⟩`
-throughout): how a merchant **obtains an API key**, the **sandbox/test host** for
-external merchants, the exact **error envelope**, and the **webhook egress IPs** to
-allowlist.
+Full detail in [`docs/08-webhooks.md`](docs/08-webhooks.md).
 
 ---
 

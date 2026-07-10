@@ -17,8 +17,7 @@ under `/api`, so the wire path for `/v1/payment/collect` is
 | Environment | Base URL |
 |-------------|----------|
 | Production  | `https://api.marvincorporate.co/api` |
-| Local / dev | `http://localhost:9090/api` |
-| Sandbox / test (external merchants) | `⟨CONFIRM⟩` (candidate: `https://test.marvincorporate.co/api`) |
+| Testing     | The test environment provided by Marvin Pay (see [Testing](11-testing-and-sandbox.md)) |
 
 Throughout the docs, **`{BASE}`** means the base URL for your environment
 (including the trailing `/api`).
@@ -35,13 +34,12 @@ Throughout the docs, **`{BASE}`** means the base URL for your environment
 - **Currency + country travel together.** Every money request carries BOTH
   `currency` and `country_code`. Sending one without the other is invalid.
 - **Idempotency:** money-moving POSTs accept an `X-Idempotency-Key` header.
-  See [Idempotency](10-idempotency.md).
+  See [Idempotency](06-idempotency.md).
 
 ## How you get an API key
 
-The API key is issued on your `MerchantAccounts` record and is passed as the
-`X-API-KEY` header on all `/v1/payment/**` calls. How a merchant obtains the key
-(self-serve portal screen vs. ops-provisioned) is **`⟨CONFIRM⟩`**.
+Your API key is passed as the `X-API-KEY` header on all `/v1/payment/**` calls.
+Obtain it from the merchant portal or your Marvin Pay account manager.
 
 See [Authentication](02-authentication.md) for the full auth model.
 
@@ -60,7 +58,7 @@ curl -X POST "https://api.marvincorporate.co/api/v1/payment/collect" \
     "country_code": "CM",
     "currency": "XAF",
     "amount": 5000,
-    "mobile_number": "237670000001",
+    "mobile_number": "2376XXXXXXXX",
     "payment_method": "mtn_cm",
     "transaction_id": "order-1001",
     "description": "Order #1001"
@@ -82,24 +80,20 @@ while the customer approves the charge on their handset:
 
 **A 200/202 does not mean money moved.** Confirm the outcome by polling
 `GET {BASE}/v1/payment/status/order-1001` until `transaction_status` is
-`SUCCESSFUL` or `FAILED`. See [Transaction Status](09-transaction-status.md).
+`SUCCESSFUL` or `FAILED`. See [Transaction Status](05-transaction-status.md).
 
 ## Map of the docs
 
 | Doc | What it covers |
 |-----|----------------|
 | [01 Getting Started](01-getting-started.md) | This page — overview, base URL, quickstart |
-| [02 Authentication](02-authentication.md) | `X-API-KEY`, IP/origin whitelisting, portal JWT/OTP |
+| [02 Authentication](02-authentication.md) | `X-API-KEY`, IP/origin whitelisting |
 | [03 Collect](03-collect.md) | Collect from a customer (payer → merchant) |
-| [04 Payout](04-payout.md) | Single payout (merchant → recipient) |
-| [05 Bulk Payout](05-bulk-payout.md) | Encrypted batch payouts (JWT + OTP) |
-| [06 Invoices](06-invoices.md) | Invoice creation + public pay |
-| [07 Campaigns](07-campaigns.md) | Crowdfunding campaigns + public contribute |
-| [08 QR Codes](08-qr-codes.md) | QR generation + public resolve/pay/poll |
-| [09 Transaction Status](09-transaction-status.md) | Status endpoint + poll schedule |
-| [10 Idempotency](10-idempotency.md) | Idempotency keys, replay, best practices |
-| [11 Fees & Fee Bearer](11-fees-and-fee-bearer.md) | Fee estimates, MERCHANT vs CUSTOMER |
-| [12 Webhooks](12-webhooks.md) | Events, payloads, retries, signature status |
-| [13 Errors & Rate Limits](13-errors-and-rate-limits.md) | Status codes, rate limits, retries |
-| [14 Reference](14-reference.md) | All enums, currencies, payment methods, amounts |
-| [15 Testing & Sandbox](15-testing-and-sandbox.md) | Magic phone numbers, sandbox gating |
+| [04 Payout](04-payout.md) | Payout (merchant → recipient) |
+| [05 Transaction Status](05-transaction-status.md) | Status endpoint + poll schedule |
+| [06 Idempotency](06-idempotency.md) | Idempotency keys, replay, best practices |
+| [07 Fees & Fee Bearer](07-fees-and-fee-bearer.md) | Fee estimates, MERCHANT vs CUSTOMER |
+| [08 Webhooks](08-webhooks.md) | Events, payloads, retries, signature verification |
+| [09 Errors & Rate Limits](09-errors-and-rate-limits.md) | Status codes, rate limits, retries |
+| [10 Reference](10-reference.md) | All enums, currencies, payment methods, amounts |
+| [11 Testing & Sandbox](11-testing-and-sandbox.md) | Testing against the Marvin Pay test environment |

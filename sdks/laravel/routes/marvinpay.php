@@ -15,9 +15,9 @@ use MarvinPay\Laravel\Http\Middleware\VerifyMarvinPayWebhook;
 |   require base_path('vendor/marvinpay/laravel/routes/marvinpay.php');
 |
 | Use a hard-to-guess path in production and allowlist Marvin Pay egress IPs.
-| Webhooks are UNSIGNED today — the controller confirms via getStatus() before
-| acting. Keep the route free of CSRF (it lives outside the `web` group by
-| default when registered here).
+| The controller confirms via getStatus() before acting (deliveries are
+| at-least-once). Keep the route free of CSRF (it lives outside the `web` group
+| by default when registered here).
 */
 Route::post('/marvinpay/webhook', [WebhookController::class, 'handle'])
     ->middleware(VerifyMarvinPayWebhook::class)

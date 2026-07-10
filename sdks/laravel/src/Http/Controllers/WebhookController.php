@@ -14,8 +14,8 @@ use MarvinPay\Laravel\Facades\MarvinPay;
  * Example webhook receiver.
  *
  * Flow: read the event → dedupe on (transactionId + status) → confirm the
- * outcome out-of-band via getStatus() (webhooks are a HINT and are UNSIGNED
- * today) → act → return 200 (any 2xx counts as success to Marvin Pay).
+ * outcome out-of-band via getStatus() (webhooks are a HINT; deliveries are
+ * at-least-once) → act → return 200 (any 2xx counts as success to Marvin Pay).
  *
  * Copy/adapt this into your app; wire it behind {@see \MarvinPay\Laravel\Http\Middleware\VerifyMarvinPayWebhook}.
  */
@@ -41,7 +41,7 @@ class WebhookController
         }
         Cache::put($dedupeKey, true, now()->addHours(24));
 
-        // The webhook is only a hint (and is UNSIGNED today) — confirm before acting.
+        // The webhook is only a hint — confirm before acting (deliveries are at-least-once).
         try {
             $confirmed = MarvinPay::getStatus($transactionId);
             $txStatus = $confirmed['transaction_status'] ?? null; // SUCCESSFUL | FAILED | PENDING

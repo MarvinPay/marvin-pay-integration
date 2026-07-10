@@ -1,6 +1,6 @@
 {
     "name": "marvinpay/sdk",
-    "description": "Lightweight, zero-dependency PHP SDK for the Marvin Pay mobile-money payment gateway (collect, payout, status, fees, invoices, campaigns, QR).",
+    "description": "Lightweight, zero-dependency PHP SDK for the Marvin Pay mobile-money payment gateway (collect, payout, status, fees, webhooks).",
     "type": "library",
     "keywords": ["marvinpay", "payment", "mobile-money", "xaf", "xof", "gateway"],
     "license": "MIT",

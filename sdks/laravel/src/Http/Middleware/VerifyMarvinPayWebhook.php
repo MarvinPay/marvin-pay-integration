@@ -14,17 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
  * `config('marvinpay.webhook_secret')`, `sha256=` prefix stripped, constant-time).
  *
  * ────────────────────────────────────────────────────────────────────────────
- *  HONESTY CAVEAT — webhooks are effectively UNSIGNED today.
+ *  Configure a webhook secret on your account to enable signed deliveries. This
+ *  middleware verifies the signature when a secret and signature are present and
+ *  rejects on a genuine MISMATCH. When either is absent it logs and passes the
+ *  request through, leaving the confirm step to your controller.
  *
- *  The backend does not populate `webhookSecret`, so `X-Webhook-Signature` is
- *  NOT sent right now, and the HMAC base string is not yet aligned. Therefore
- *  this middleware does NOT reject when a signature or secret is absent — it
- *  logs and passes the request through. It only rejects on a genuine MISMATCH
- *  (which cannot happen until backend signing is live), so it is safe to wire in
- *  now and becomes effective automatically once signing is enabled.
- *
- *  Regardless of this middleware, your controller MUST confirm the outcome
- *  out-of-band via the MarvinPay service `getStatus()` before acting.
+ *  Regardless of this middleware, and because deliveries are at-least-once, your
+ *  controller MUST confirm the outcome out-of-band via the MarvinPay service
+ *  `getStatus()` before acting.
  * ────────────────────────────────────────────────────────────────────────────
  */
 class VerifyMarvinPayWebhook
@@ -34,7 +31,7 @@ class VerifyMarvinPayWebhook
         $secret = (string) config('marvinpay.webhook_secret', '');
         $signature = $request->header('X-Webhook-Signature');
 
-        // Unsigned today: no secret configured or no signature present => log & pass.
+        // No secret configured or no signature present => log & pass.
         if ($secret === '' || $signature === null || $signature === '') {
             Log::info('MarvinPay webhook received without a verifiable signature; passing through. Confirm the outcome via getStatus() before acting.');
             return $next($request);

@@ -8,8 +8,7 @@ namespace MarvinPay;
  * Zero-dependency HTTP client for the Marvin Pay payment gateway.
  *
  * Transport is plain cURL + JSON. Authentication is the merchant `X-API-KEY`
- * header for `/v1/payment/**`; an optional portal JWT (`Authorization: Bearer`)
- * can be supplied for the JWT-gated surfaces.
+ * header for `/v1/payment/**`.
  *
  * All field names on request bodies match the API contract's snake_case exactly.
  * Amounts are whole numbers (XAF/XOF have no minor units); the client serializes
@@ -23,17 +22,15 @@ class MarvinPayClient
 
     private string $apiKey;
     private string $baseUrl;
-    private ?string $bearerToken;
     private int $timeout;
 
     /** @var array<string,string> lowercased header name => value from the last response */
     private array $lastResponseHeaders = [];
 
     /**
-     * @param string               $apiKey  merchant API key sent as `X-API-KEY` (may be '' for public hosted-pay only)
+     * @param string               $apiKey  merchant API key sent as `X-API-KEY`
      * @param array<string,mixed>  $options {
      *     base_url?:     string  default https://api.marvincorporate.co/api
-     *     bearer_token?: string  optional portal JWT for JWT-gated endpoints
      *     timeout?:      int     request timeout in seconds (default 30)
      * }
      */
@@ -41,9 +38,6 @@ class MarvinPayClient
     {
         $this->apiKey = $apiKey;
         $this->baseUrl = \rtrim((string) ($options['base_url'] ?? self::DEFAULT_BASE_URL), '/');
-        $this->bearerToken = isset($options['bearer_token']) && $options['bearer_token'] !== ''
-            ? (string) $options['bearer_token']
-            : null;
         $this->timeout = (int) ($options['timeout'] ?? 30);
     }
 
@@ -160,68 +154,6 @@ class MarvinPayClient
 
         // Timed out still pending — return the last observation (or fetch once).
         return $last ?? $this->getStatus($transactionId);
-    }
-
-    // ─────────────────────────────────────────────────────────────────────
-    //  Public "hosted pay" flows (no API key required by the server)
-    // ─────────────────────────────────────────────────────────────────────
-
-    /**
-     * Pay a public invoice. `POST /v1/invoices/{reference}/pay`.
-     *
-     * @param array<string,mixed> $payInvoiceRequest PayInvoiceRequest:
-     *        country_code, currency, mobile_number, payment_method,
-     *        beneficiary_name (required), customer_email (optional)
-     * @return array<string,mixed> PaymentResult
-     */
-    public function payInvoice(string $reference, array $payInvoiceRequest): array
-    {
-        return $this->request('POST', '/v1/invoices/' . \rawurlencode($reference) . '/pay', [
-            'json' => $this->normalizeAmount($payInvoiceRequest),
-        ]);
-    }
-
-    /**
-     * Contribute to a public campaign. `POST /v1/campaigns/{reference}/contribute`.
-     *
-     * @param array<string,mixed> $contributeRequest ContributeRequest:
-     *        country_code, currency, amount (min 100), mobile_number,
-     *        payment_method, beneficiary_name, customer_email
-     * @return array<string,mixed> PaymentResult
-     */
-    public function contributeCampaign(string $reference, array $contributeRequest): array
-    {
-        return $this->request('POST', '/v1/campaigns/' . \rawurlencode($reference) . '/contribute', [
-            'json' => $this->normalizeAmount($contributeRequest),
-        ]);
-    }
-
-    /**
-     * Pay a QR code. `POST /v1/merchant/qrcode/pay/{qrReference}`.
-     * The merchant API key is resolved server-side from the QR reference.
-     *
-     * @param array<string,mixed> $qrPaymentRequest QRPaymentRequest:
-     *        country_code, currency, amount (ignored if the QR has a fixedAmount),
-     *        mobile_number, payment_method, beneficiary_name (required), customer_email
-     * @return array<string,mixed> PaymentResult
-     */
-    public function payQr(string $qrReference, array $qrPaymentRequest): array
-    {
-        return $this->request('POST', '/v1/merchant/qrcode/pay/' . \rawurlencode($qrReference), [
-            'json' => $this->normalizeAmount($qrPaymentRequest),
-        ]);
-    }
-
-    /**
-     * Public poll for a hosted-pay (QR/invoice/campaign) transaction.
-     * `GET /v1/merchant/qrcode/status/{transactionId}`. Poll ~every 5s.
-     *
-     * @return array<string,mixed> plain map: transactionId, status, amount,
-     *         currency, paymentMethod, mobileNumber, timestamp
-     */
-    public function getQrStatus(string $transactionId): array
-    {
-        return $this->request('GET', '/v1/merchant/qrcode/status/' . \rawurlencode($transactionId));
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -342,9 +274,6 @@ class MarvinPayClient
         $headers = ['Accept: application/json'];
         if ($this->apiKey !== '') {
             $headers[] = 'X-API-KEY: ' . $this->apiKey;
-        }
-        if ($this->bearerToken !== null) {
-            $headers[] = 'Authorization: Bearer ' . $this->bearerToken;
         }
         foreach (($opts['headers'] ?? []) as $name => $value) {
             $headers[] = $name . ': ' . $value;

@@ -1,8 +1,8 @@
 # @marvinpay/sdk (Node.js)
 
 A lightweight, **zero-dependency** Node.js client for the [Marvin Pay](../../CONTRACT.md)
-payment gateway — mobile-money collect/payout, status polling, the public
-hosted-pay flows (invoice / campaign / QR), and webhook verification.
+payment gateway — mobile-money collect/payout, status polling, and webhook
+verification.
 
 - **No runtime dependencies.** Uses the built-in global `fetch` and `node:crypto`.
 - **Node 18+** (tested on 20).
@@ -10,8 +10,8 @@ hosted-pay flows (invoice / campaign / QR), and webhook verification.
 
 > The authoritative API reference is [`../../CONTRACT.md`](../../CONTRACT.md).
 > Longer guides live in [`../../docs/`](../../docs/) (getting started,
-> collect, payout, invoices, campaigns, QR, idempotency, webhooks, fees,
-> errors, testing/sandbox).
+> collect, payout, transaction status, idempotency, fees, webhooks, errors,
+> testing).
 
 ---
 
@@ -54,7 +54,7 @@ async function main() {
     country_code: 'CM',          // currency + country ALWAYS travel together
     currency: 'XAF',
     amount: 5000,                // whole number, 100–500000 (no minor units)
-    mobile_number: '237670000001',
+    mobile_number: '<your-test-msisdn>',
     payment_method: 'mtn_cm',    // from getPaymentMethods('CM')
     transaction_id,
     beneficiary_name: 'Jane Payer',
@@ -127,52 +127,17 @@ provider names.
 
 ---
 
-## Public hosted-pay flows (no API key)
-
-These let a customer pay a **reference** (invoice / campaign / QR). No auth is
-sent on these calls.
-
-```js
-// Invoice — the invoice fixes the amount, so PayInvoiceRequest has no `amount`.
-await client.payInvoice('INV-abc123', {
-  country_code: 'CM',
-  currency: 'XAF',
-  mobile_number: '237670000001',
-  payment_method: 'mtn_cm',
-  beneficiary_name: 'Jane Payer', // required — payer name
-  // customer_email: 'jane@example.com',
-});
-
-// Campaign contribution
-await client.contributeCampaign('CMP-xyz789', {
-  country_code: 'CM', currency: 'XAF', amount: 1000,
-  mobile_number: '237670000001', payment_method: 'mtn_cm',
-  beneficiary_name: 'Jane Donor',
-});
-
-// QR — amount is ignored server-side if the QR has a fixedAmount
-await client.payQr('QR-000111', {
-  country_code: 'CM', currency: 'XAF', amount: 2000,
-  mobile_number: '237670000001', payment_method: 'mtn_cm',
-  beneficiary_name: 'Jane Payer',
-});
-
-// Public poll (used by the hosted pay pages) — poll ~every 5s
-const s = await client.getQrStatus('MARVIN-abc123');
-```
-
----
-
-## Webhook handling — READ THE HONESTY CAVEAT
+## Webhook handling — verify, then always confirm
 
 Marvin Pay `POST`s a JSON event to your `webhookUrl` when a transaction resolves.
 
-> ⚠️ **Webhooks are effectively UNSIGNED today** (CONTRACT §8.5). `webhookSecret`
-> is not populated by any backend path, so `X-Webhook-Signature` is **not sent**,
-> and the HMAC scheme is not yet finalized. This means `verifyWebhookSignature`
-> is **inert right now** — it will return `false`.
->
-> **Because of that, you MUST NOT trust a webhook on its own.** For every event:
+> Marvin Pay signs webhook deliveries with an HMAC-SHA256 signature in the
+> `X-Webhook-Signature` header (format `sha256=<hex>`) when your account has a
+> webhook secret configured. Verify it against your webhook secret using
+> `verifyWebhookSignature`. In addition — and because deliveries are
+> at-least-once — always confirm the transaction independently via
+> `GET /v1/payment/status/{transactionId}` before acting on it, and dedupe on
+> `transactionId` + `status`. For every event:
 >
 > 1. **Confirm out-of-band** with `client.getStatus(transactionId)` before acting
 >    (fulfilling orders, crediting users, etc.). This is the authoritative check.
@@ -181,9 +146,9 @@ Marvin Pay `POST`s a JSON event to your `webhookUrl` when a transaction resolves
 > 3. Restrict the endpoint (hard-to-guess path, IP allowlist).
 > 4. Respond `2xx` fast; do the real work asynchronously.
 >
-> The `verifyWebhookSignature` helper implements the *intended* HMAC-SHA256 scheme
-> and is safe to wire in now — it starts passing automatically once backend signing
-> ships and you set the secret. Keep the `getStatus` confirmation step regardless.
+> The `verifyWebhookSignature` helper computes the HMAC-SHA256 over the raw
+> request body and returns `false` when the secret or signature is missing. Keep
+> the `getStatus` confirmation step regardless of the signature result.
 
 ```js
 const express = require('express');
@@ -194,13 +159,13 @@ const app = express();
 const client = new MarvinPayClient({ apiKey: process.env.MARVIN_API_KEY });
 const seen = new Set(); // demo only — use a durable store in production
 
-// Capture the RAW body — required for a correct HMAC once signing ships.
+// Capture the RAW body — required for a correct HMAC signature check.
 app.use('/webhooks/marvin', express.raw({ type: '*/*' }));
 
 app.post('/webhooks/marvin', async (req, res) => {
   const raw = req.body; // Buffer
 
-  // Inert today (returns false). Kept for when signing ships.
+  // Returns false when the secret or signature is missing; confirm via getStatus regardless.
   const signed = verifyWebhookSignature(
     raw,
     req.get('X-Webhook-Signature'),
@@ -244,7 +209,6 @@ A runnable version is in [`../../examples/node/webhook-server.js`](../../example
 |---------------|----------|------------------------------------------|-------|
 | `apiKey`      | `string` | —                                        | Sent as `X-API-KEY` on the payment API. |
 | `baseUrl`     | `string` | `https://api.marvincorporate.co/api`     | Must include the `/api` context path. Dev: `http://localhost:9090/api`. |
-| `bearerToken` | `string` | —                                        | Optional portal JWT, sent as `Authorization: Bearer` (for portal endpoints). |
 | `timeoutMs`   | `number` | `30000`                                  | Per-request timeout (AbortController). |
 
 **Behavior notes**
@@ -272,14 +236,6 @@ A runnable version is in [`../../examples/node/webhook-server.js`](../../example
 | `getFees({ currency, amount, direction, feeBearer })` | `GET /v1/payment/fees` |
 | `getPaymentMethods(countryCode)` | `GET /v1/payment/payment-methods/{countryCode}` |
 | `waitForCompletion(txId, opts)` | polls `getStatus` |
-| `payInvoice(ref, body)` | `POST /v1/invoices/{ref}/pay` |
-| `contributeCampaign(ref, body)` | `POST /v1/campaigns/{ref}/contribute` |
-| `payQr(ref, body)` | `POST /v1/merchant/qrcode/pay/{ref}` |
-| `getQrStatus(txId)` | `GET /v1/merchant/qrcode/status/{txId}` |
-
-Bulk payout and the invoice/campaign/QR **creation** endpoints require a portal
-JWT and (for bulk) client-side AES + OTP; they are documented in
-[`../../CONTRACT.md`](../../CONTRACT.md) §5 but intentionally not bundled here.
 
 ## License
 

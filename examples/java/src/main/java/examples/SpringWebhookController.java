@@ -30,10 +30,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * <ol>
  *   <li>Read the <b>raw</b> body (as {@code byte[]}) so any signature check sees exactly
  *       what was sent.</li>
- *   <li>Verify {@code X-Webhook-Signature} with {@link WebhookVerifier}. <b>Note:</b>
- *       webhooks are effectively UNSIGNED today (no {@code webhookSecret} is set, so the
- *       header is not sent). The check is inert now and becomes effective automatically
- *       once backend signing lands — keep it wired in.</li>
+ *   <li>Verify {@code X-Webhook-Signature} with {@link WebhookVerifier}. Configure a
+ *       webhook secret on your account to enable signed deliveries; the check returns
+ *       false when the secret or signature is missing. Because deliveries are
+ *       at-least-once, keep it wired in but never rely on it alone.</li>
  *   <li><b>Always confirm out-of-band</b> via {@code getStatus(transactionId)} before
  *       acting. This is the real trust anchor today. Never fulfil on the payload alone.</li>
  *   <li><b>Dedupe</b> on {@code transactionId + status} — deliveries retry and can repeat.</li>
@@ -63,14 +63,14 @@ public class SpringWebhookController {
 
         byte[] body = rawBody == null ? new byte[0] : rawBody;
 
-        // 1) Signature check (inert today — the header is not sent yet). Do NOT rely on it.
-        //    Configure your account's webhookSecret here once backend signing is enabled.
-        String webhookSecret = System.getenv("MARVIN_WEBHOOK_SECRET"); // may be null today
+        // 1) Signature check. Configure your account's webhook secret to enable signed
+        //    deliveries. Do NOT rely on it alone (deliveries are at-least-once).
+        String webhookSecret = System.getenv("MARVIN_WEBHOOK_SECRET");
         boolean signatureValid = webhookSecret != null
                 && WebhookVerifier.verify(body, signature, webhookSecret);
-        // We deliberately do NOT reject on !signatureValid right now, because no signature
-        // is sent. We rely on step 3 (status confirmation) instead. Once signing is live and
-        // you have a secret, you can start rejecting unsigned/invalid deliveries.
+        // We deliberately do NOT reject on !signatureValid here; deliveries are
+        // at-least-once, so we rely on step 3 (status confirmation) instead. With a
+        // webhook secret configured you may additionally reject invalid deliveries.
 
         // 2) Parse just enough to learn which transaction this is about.
         String payload = new String(body, StandardCharsets.UTF_8);

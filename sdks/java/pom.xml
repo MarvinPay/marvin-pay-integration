@@ -12,7 +12,7 @@
     <name>Marvin Pay Java SDK</name>
     <description>
         Lightweight, self-contained Java SDK for the Marvin Pay mobile-money payment
-        gateway (collect, payout, status, fees, hosted pay flows, and webhook verification).
+        gateway (collect, payout, status, fees, and webhook verification).
         Uses the JDK HttpClient and Jackson only.
     </description>
     <url>https://api.marvincorporate.co</url>

@@ -11,8 +11,7 @@
  *
  * Key facts encoded here (see CONTRACT.md for detail):
  *   - Servlet context path is `/api`; the default baseUrl already includes it.
- *   - Payment API auth is the `X-API-KEY` header. Portal endpoints use a JWT
- *     `Authorization: Bearer` token (optional here via `bearerToken`).
+ *   - Payment API auth is the `X-API-KEY` header.
  *   - Money-moving POSTs (collect/payout) take an `X-Idempotency-Key`.
  *   - Amounts are WHOLE numbers (XAF/XOF have no minor units), 100–500000.
  *   - REST status responses say `SUCCESSFUL`; webhooks say `SUCCESS`. Use
@@ -65,12 +64,10 @@ class MarvinPayClient {
    * @param {object} [options]
    * @param {string} [options.apiKey]       Merchant API key, sent as `X-API-KEY`.
    * @param {string} [options.baseUrl]      Defaults to production; must include `/api`.
-   * @param {string} [options.bearerToken]  Optional portal JWT for `Authorization: Bearer`.
    * @param {number} [options.timeoutMs]    Per-request timeout (default 30000).
    */
-  constructor({ apiKey, baseUrl = DEFAULT_BASE_URL, bearerToken, timeoutMs = 30000 } = {}) {
+  constructor({ apiKey, baseUrl = DEFAULT_BASE_URL, timeoutMs = 30000 } = {}) {
     this.apiKey = apiKey;
-    this.bearerToken = bearerToken;
     this.timeoutMs = timeoutMs;
     // Strip any trailing slash so path concatenation is predictable.
     this.baseUrl = String(baseUrl).replace(/\/+$/, '');
@@ -216,73 +213,6 @@ class MarvinPayClient {
   }
 
   // ---------------------------------------------------------------------------
-  // Public "hosted pay" flows (NO auth required — never send X-API-KEY here)
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Pay a public invoice by reference. POST /v1/invoices/{reference}/pay.
-   * Body is PayInvoiceRequest (no `amount` — the invoice fixes it).
-   * @param {string} reference
-   * @param {object} body  PayInvoiceRequest (see CONTRACT §4.1)
-   * @returns {Promise<object>} PaymentResult
-   */
-  async payInvoice(reference, body) {
-    const { data } = await this._request(
-      'POST',
-      `/v1/invoices/${encodeURIComponent(reference)}/pay`,
-      { body: this._coerceAmount(body), auth: 'none', retry: false },
-    );
-    return data;
-  }
-
-  /**
-   * Contribute to a public campaign. POST /v1/campaigns/{reference}/contribute.
-   * @param {string} reference
-   * @param {object} body  ContributeRequest (see CONTRACT §4.2)
-   * @returns {Promise<object>} PaymentResult
-   */
-  async contributeCampaign(reference, body) {
-    const { data } = await this._request(
-      'POST',
-      `/v1/campaigns/${encodeURIComponent(reference)}/contribute`,
-      { body: this._coerceAmount(body), auth: 'none', retry: false },
-    );
-    return data;
-  }
-
-  /**
-   * Pay a QR code by reference. POST /v1/merchant/qrcode/pay/{qrReference}.
-   * `amount` is ignored server-side if the QR has a fixedAmount.
-   * @param {string} reference  the QR reference
-   * @param {object} body  QRPaymentRequest (see CONTRACT §4.3)
-   * @returns {Promise<object>} PaymentResult
-   */
-  async payQr(reference, body) {
-    const { data } = await this._request(
-      'POST',
-      `/v1/merchant/qrcode/pay/${encodeURIComponent(reference)}`,
-      { body: this._coerceAmount(body), auth: 'none', retry: false },
-    );
-    return data;
-  }
-
-  /**
-   * Public poll for a hosted-pay transaction (invoice/campaign/QR pages).
-   * GET /v1/merchant/qrcode/status/{transactionId}. Returns a plain map; no
-   * merchant/fee data. Poll ~every 5s.
-   * @param {string} transactionId
-   * @returns {Promise<object>}
-   */
-  async getQrStatus(transactionId) {
-    const { data } = await this._request(
-      'GET',
-      `/v1/merchant/qrcode/status/${encodeURIComponent(transactionId)}`,
-      { auth: 'none' },
-    );
-    return data;
-  }
-
-  // ---------------------------------------------------------------------------
   // Status normalization
   // ---------------------------------------------------------------------------
 
@@ -336,13 +266,6 @@ class MarvinPayClient {
     return out;
   }
 
-  /** Shallow-copy a body and coerce `amount` (if present) to a whole number. */
-  _coerceAmount(body) {
-    if (!body || typeof body !== 'object') return body;
-    if (body.amount === undefined || body.amount === null) return body;
-    return { ...body, amount: toWholeNumber(body.amount) };
-  }
-
   /** Build an absolute URL, appending a query string if provided. */
   _buildUrl(path, query) {
     let url = this.baseUrl + path;
@@ -367,9 +290,8 @@ class MarvinPayClient {
     const headers = { Accept: 'application/json' };
     if (body !== undefined) headers['Content-Type'] = 'application/json';
     if (auth === 'default') {
-      // Per the contract: send X-API-KEY when set, and Authorization when set.
+      // Per the contract: send X-API-KEY when set.
       if (this.apiKey) headers['X-API-KEY'] = this.apiKey;
-      if (this.bearerToken) headers['Authorization'] = `Bearer ${this.bearerToken}`;
     }
     if (idempotencyKey) headers['X-Idempotency-Key'] = idempotencyKey;
 

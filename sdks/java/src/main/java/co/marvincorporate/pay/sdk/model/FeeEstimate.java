@@ -12,8 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Response from {@code GET /v1/payment/fees} (and the hosted-pay {@code /quote}
- * endpoints, which return the same fee-bearer split).
+ * Response from {@code GET /v1/payment/fees}.
  *
  * <p>The known fields are modelled below. The server may return additional fields
  * (including the fee amount itself, whose exact key can vary); those are captured

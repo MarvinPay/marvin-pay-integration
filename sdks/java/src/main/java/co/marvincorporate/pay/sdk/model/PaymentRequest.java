@@ -5,23 +5,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Request body for the core money-moving calls and the hosted-pay helpers.
+ * Request body for the core money-moving calls.
  *
- * <p>This one class covers every request shape the SDK sends because they are all
- * subsets of the same {@code snake_case} field set:
- * <ul>
- *   <li>{@code POST /v1/payment/collect} and {@code /payout} — use all the core fields.</li>
- *   <li>{@code POST /v1/invoices/{ref}/pay} — set {@link #countryCode},
- *       {@link #currency}, {@link #mobileNumber}, {@link #paymentMethod},
- *       {@link #beneficiaryName} (required), {@link #customerEmail} (optional).
- *       The invoice already carries the amount, so leave {@link #amount} unset.</li>
- *   <li>{@code POST /v1/campaigns/{ref}/contribute} — as above plus {@link #amount}.</li>
- *   <li>{@code POST /v1/merchant/qrcode/pay/{ref}} — as invoice-pay plus an optional
- *       {@link #amount} (ignored if the QR has a fixed amount).</li>
- * </ul>
- *
- * <p>{@code null} fields are omitted from the JSON, so you only populate what a
- * given endpoint needs.
+ * <p>Both {@code POST /v1/payment/collect} and {@code POST /v1/payment/payout} use
+ * this {@code snake_case} field set. {@code null} fields are omitted from the JSON,
+ * so you only populate what a given call needs.
  *
  * <p><b>Amounts are whole numbers.</b> XAF and XOF have no minor units — never
  * send decimals. Per-transaction range is 100–500000. This field is a {@link Long}.
@@ -60,7 +48,7 @@ public class PaymentRequest {
     @JsonProperty("transaction_id")
     private String transactionId;
 
-    /** For collect: the payer's name. For payout / hosted-pay: the recipient/payer name. */
+    /** For collect: the payer's name. For payout: the recipient's name. */
     @JsonProperty("beneficiary_name")
     private String beneficiaryName;
 

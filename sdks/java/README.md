@@ -6,9 +6,8 @@ only — no card channel).
 
 - **Java 17**, `java.net.http.HttpClient` + Jackson only. No other runtime deps.
 - Covers the programmatic surface: **collect**, **payout**, **status**, **fees**,
-  **payment-methods**, a `waitForCompletion` poller, the public **hosted-pay** helpers
-  (invoice / campaign / QR), and a **webhook verifier**.
-- Generated against [`../../CONTRACT.md`](../../CONTRACT.md) — the source of truth.
+  **payment-methods**, a `waitForCompletion` poller, and a **webhook verifier**.
+- See [`../../CONTRACT.md`](../../CONTRACT.md) for the API reference.
   Deeper docs live in [`../../docs/`](../../docs/).
 
 > **Base URL includes `/api`.** Production is `https://api.marvincorporate.co/api`
@@ -62,7 +61,7 @@ PaymentRequest req = new PaymentRequest()
         .countryCode("CM")           // currency + country ALWAYS travel together
         .currency("XAF")
         .amount(5000L)               // whole number, 100–500000, no decimals
-        .mobileNumber("237670000001")
+        .mobileNumber("<your-test-msisdn>")
         .paymentMethod("mtn_cm")     // provider name — fetch the live list per country
         .transactionId(txnId)        // your unique reference
         .description("Order #1001")
@@ -95,31 +94,6 @@ FeeEstimate fee = client.getFees("XAF", 5000, Direction.COLLECT, FeeBearer.CUSTO
 List<String> methods = client.getPaymentMethods("CM"); // e.g. [mtn_cm, orange_cm]
 ```
 
-### Hosted-pay helpers (public — no API key sent)
-
-```java
-// Pay an invoice reference. The invoice already carries the amount.
-PaymentResult r1 = client.payInvoice("INV-abc", new PaymentRequest()
-        .countryCode("CM").currency("XAF")
-        .mobileNumber("237670000001").paymentMethod("mtn_cm")
-        .beneficiaryName("Jane Payer").customerEmail("jane@example.com"));
-
-// Contribute to a campaign (amount required, min 100).
-PaymentResult r2 = client.contributeCampaign("CMP-xyz", new PaymentRequest()
-        .countryCode("CM").currency("XAF").amount(2000L)
-        .mobileNumber("237670000002").paymentMethod("orange_cm")
-        .beneficiaryName("Kind Donor"));
-
-// Pay a QR (amount ignored if the QR is fixed-amount).
-PaymentResult r3 = client.payQr("QR-123", new PaymentRequest()
-        .countryCode("CM").currency("XAF")
-        .mobileNumber("237670000003").paymentMethod("mtn_cm")
-        .beneficiaryName("Walk-in Customer"));
-
-// Public poll for hosted-pay transactions (plain map).
-Map<String, Object> qrStatus = client.getQrStatus("MARVIN-...");
-```
-
 ---
 
 ## Errors
@@ -148,33 +122,24 @@ Money-moving POSTs are **never** auto-retried — rely on idempotency and re-sen
 ## Webhooks — read this before you trust one
 
 The SDK ships `WebhookVerifier.verify(rawBody, signatureHeader, secret)` implementing
-the **intended** scheme: HMAC-SHA256 over the raw request body, hex, compared
-constant-time against `X-Webhook-Signature` (minus its `sha256=` prefix).
+the scheme: HMAC-SHA256 over the raw request body, hex, compared constant-time
+against `X-Webhook-Signature` (minus its `sha256=` prefix).
 
-**But webhooks are effectively UNSIGNED today.** The backend does not populate
-`webhookSecret`, so `X-Webhook-Signature` is not sent, and the exact HMAC base string
-is not yet finalized. The verifier is inert until backend signing lands — safe to wire
-in now, it starts working automatically later.
+Marvin Pay signs webhook deliveries with this signature when your account has a
+webhook secret configured. `WebhookVerifier.verify` returns `false` when the secret
+or signature is missing. Because deliveries are at-least-once, the signature is never
+your only trust anchor.
 
 **Regardless of signature status:** on every webhook, **confirm out-of-band** with
 `getStatus(transactionId)` before acting (fulfilling an order, crediting a user).
 Dedupe on `transactionId` + `status`. See
-[`../../docs/12-webhooks.md`](../../docs/12-webhooks.md) and the
+[`../../docs/08-webhooks.md`](../../docs/08-webhooks.md) and the
 [`SpringWebhookController` example](../../examples/java/src/main/java/examples/SpringWebhookController.java).
 
 ---
 
-## Not bundled (by design)
-
-- **Portal JWT / OTP login** — the SDK accepts a `bearerToken` you already hold but does
-  not run the interactive `/merchant-auth` OTP flow.
-- **Bulk payout** — needs client-side AES encryption + an OTP; see
-  [`../../docs/05-bulk-payout.md`](../../docs/05-bulk-payout.md).
-- **Creation** of invoices/campaigns/QR codes (JWT endpoints) — create them in the
-  portal; the SDK covers the public *pay* side.
-
 ## Reference
 
-- Contract (source of truth): [`../../CONTRACT.md`](../../CONTRACT.md)
+- API reference: [`../../CONTRACT.md`](../../CONTRACT.md)
 - Full docs: [`../../docs/`](../../docs/)
 - Runnable examples: [`../../examples/java/`](../../examples/java/)

@@ -37,10 +37,10 @@ mvn -q exec:java -Dexec.mainClass=examples.PayoutExample
 (If you don't have the `exec-maven-plugin` configured, run the compiled classes on the
 classpath produced by `mvn dependency:build-classpath`, or import the module into your IDE.)
 
-The examples use the sandbox-style Cameroon MTN number `237670000001`. Note that
-**sandbox magic numbers only short-circuit the hosted-pay flows** (invoice/campaign/QR)
-and only on the backend `dev` profile — direct API collects/payouts always hit the real
-gateway. See [`../../docs/15-testing-and-sandbox.md`](../../docs/15-testing-and-sandbox.md).
+Sandbox/test access, test credentials, and test phone numbers are provided by Marvin
+Pay on request — contact your Marvin Pay account manager. Run integrations against the
+test environment they provide before going live. See
+[`../../docs/11-testing-and-sandbox.md`](../../docs/11-testing-and-sandbox.md).
 
 ## About `SpringWebhookController.java`
 
@@ -59,10 +59,10 @@ MarvinPayClient marvinPayClient() {
 }
 ```
 
-It demonstrates the mandatory safe-webhook recipe: take the raw body, run the (currently
-inert) signature check, **confirm out-of-band via `getStatus` before acting**, dedupe on
+It demonstrates the mandatory safe-webhook recipe: take the raw body, verify the
+signature, **confirm out-of-band via `getStatus` before acting**, dedupe on
 `transactionId + status`, and return `200`. See
-[`../../docs/12-webhooks.md`](../../docs/12-webhooks.md).
+[`../../docs/08-webhooks.md`](../../docs/08-webhooks.md).
 
 ### Don't want Spring on the classpath?
 

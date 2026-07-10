@@ -10,8 +10,8 @@ your code.
 
 | Where | Field | Values |
 |-------|-------|--------|
-| REST responses ([status](09-transaction-status.md), [collect](03-collect.md), [payout](04-payout.md)) | `transaction_status` | `SUCCESSFUL` \| `FAILED` \| `PENDING` |
-| Webhook payload ([webhooks](12-webhooks.md)) | `status` | `SUCCESS` \| `FAILED` \| `PENDING` \| `CANCEL` |
+| REST responses ([status](05-transaction-status.md), [collect](03-collect.md), [payout](04-payout.md)) | `transaction_status` | `SUCCESSFUL` \| `FAILED` \| `PENDING` |
+| Webhook payload ([webhooks](08-webhooks.md)) | `status` | `SUCCESS` \| `FAILED` \| `PENDING` \| `CANCEL` |
 
 - **Terminal states:** success and failed.
 - `PENDING` means keep polling / await the webhook.
@@ -25,7 +25,7 @@ your code.
 | `MERCHANT` | **default** (also when omitted/null); merchant absorbs the fee |
 | `CUSTOMER` | grosses up a collect / nets down a payout so the merchant receives/pays exactly `amount` |
 
-See [Fees & Fee Bearer](11-fees-and-fee-bearer.md).
+See [Fees & Fee Bearer](07-fees-and-fee-bearer.md).
 
 ## Fee direction (for `GET /v1/payment/fees`)
 
@@ -56,8 +56,7 @@ country.
 
 The `payment_method` value is the **provider name string**. **Always fetch the
 authoritative live list at runtime** via
-`GET {BASE}/v1/payment/payment-methods/{countryCode}` (or the public
-`GET {BASE}/v1/merchant/qrcode/payment-methods/{countryCode}`). Known values at
+`GET {BASE}/v1/payment/payment-methods/{countryCode}`. Known values at
 time of writing:
 
 | Country | `payment_method` values |

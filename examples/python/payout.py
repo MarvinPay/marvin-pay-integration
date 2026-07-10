@@ -8,7 +8,7 @@ Config is read from the environment:
     MARVIN_COUNTRY      (optional)  ISO-3166 alpha-2, default "CM"
     MARVIN_CURRENCY     (optional)  ISO-4217, default "XAF"
     MARVIN_PAYMENT_METHOD (optional) provider name, default "mtn_cm"
-    MARVIN_MOBILE_NUMBER (optional) recipient number, default "237670000001"
+    MARVIN_MOBILE_NUMBER (optional) recipient number (test number provided by Marvin Pay)
     MARVIN_AMOUNT       (optional)  whole number, default 5000
 
 Usage:
@@ -40,7 +40,7 @@ def main():
         "currency": os.environ.get("MARVIN_CURRENCY", "XAF"),
         "amount": int(os.environ.get("MARVIN_AMOUNT", "5000")),
         # For a payout, mobile_number / beneficiary_name identify the RECIPIENT.
-        "mobile_number": os.environ.get("MARVIN_MOBILE_NUMBER", "237670000001"),
+        "mobile_number": os.environ.get("MARVIN_MOBILE_NUMBER", "<your-test-msisdn>"),
         "beneficiary_name": os.environ.get("MARVIN_BENEFICIARY", "Jane Doe"),
         "payment_method": os.environ.get("MARVIN_PAYMENT_METHOD", "mtn_cm"),
         "transaction_id": transaction_id,

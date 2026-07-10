@@ -28,7 +28,8 @@ Route::post('/hooks/marvinpay/9f3c-secret-path', [\App\Http\Controllers\MarvinPa
     ->name('marvinpay.webhook');
 
 /*
- * Webhooks are UNSIGNED today: the middleware logs-and-passes when no
- * signature/secret is present (it only rejects a genuine mismatch). Your
- * controller MUST confirm out-of-band via MarvinPay::getStatus() before acting.
+ * The middleware verifies the X-Webhook-Signature when a secret and signature are
+ * present and rejects a genuine mismatch; when either is absent it logs and passes
+ * through. Because deliveries are at-least-once, your controller MUST confirm
+ * out-of-band via MarvinPay::getStatus() before acting.
  */

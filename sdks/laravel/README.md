@@ -5,7 +5,7 @@ A self-contained Laravel 10/11 integration for the
 Laravel's `Http` client under the hood — it does **not** depend on the vanilla
 `marvinpay/sdk` package.
 
-> Source of truth: [`../../CONTRACT.md`](../../CONTRACT.md). Narrative docs:
+> API reference: [`../../CONTRACT.md`](../../CONTRACT.md). Narrative docs:
 > [`../../docs/`](../../docs/).
 
 ## Install
@@ -41,8 +41,7 @@ This writes `config/marvinpay.php`. Set these env keys:
 ```dotenv
 MARVIN_API_KEY=your_api_key
 MARVIN_BASE_URL=https://api.marvincorporate.co/api
-MARVIN_BEARER_TOKEN=            # optional portal JWT for JWT-gated endpoints
-MARVIN_WEBHOOK_SECRET=          # your webhookSecret (unused today — see caveat)
+MARVIN_WEBHOOK_SECRET=          # your webhook secret (enables signed webhook deliveries)
 MARVIN_TIMEOUT=30
 ```
 
@@ -55,7 +54,7 @@ $result = MarvinPay::collect([
     'country_code'   => 'CM',
     'currency'       => 'XAF',      // currency + country ALWAYS travel together
     'amount'         => 5000,        // whole number, 100–500000
-    'mobile_number'  => '237670000001',
+    'mobile_number'  => '<your-test-msisdn>',
     'payment_method' => 'mtn_cm',
     'transaction_id' => 'order-1001',
 ]); // X-Idempotency-Key defaults to transaction_id
@@ -66,7 +65,6 @@ $final = MarvinPay::waitForCompletion($result['transaction_id']);
 ```
 
 Other methods: `payout()`, `getStatus()`, `getFees()`, `getPaymentMethods()`,
-`payInvoice()`, `contributeCampaign()`, `payQr()`, `getQrStatus()`,
 `getLastResponseHeaders()` (read `x-idempotency-replay`). Non-2xx responses throw
 `Illuminate\Http\Client\RequestException`; GETs retry once on 429/5xx.
 
@@ -91,23 +89,23 @@ middleware. In production, use a hard-to-guess path and allowlist Marvin Pay
 egress IPs. Prefer copying `WebhookController` into your app so you can
 implement the fulfilment TODOs.
 
-## Webhooks — honesty caveat (READ THIS)
+## Webhooks — verify, then always confirm
 
-Outbound webhooks are effectively **UNSIGNED today**: the backend does not set
-`webhookSecret`, so `X-Webhook-Signature` is not sent, and the HMAC base string
-is not yet aligned with the verifier.
+Marvin Pay signs webhook deliveries with an HMAC-SHA256 signature in the
+`X-Webhook-Signature` header (format `sha256=<hex>`) when your account has a
+webhook secret configured. Because deliveries are at-least-once, the signature
+is never your only trust anchor.
 
-- `VerifyMarvinPayWebhook` therefore does **not** reject when a signature or
-  secret is absent — it logs and passes through. It only rejects on a genuine
-  mismatch (impossible until signing is live). Safe to wire in now; it becomes
-  effective automatically once backend signing is enabled.
+- `VerifyMarvinPayWebhook` verifies the signature when a secret and signature are
+  present, and rejects on a genuine mismatch. When either is absent it logs and
+  passes through, so your controller stays in control of the confirm step.
 - On **every** webhook, the example `WebhookController` confirms out-of-band via
   `MarvinPay::getStatus($transactionId)` before acting, and dedupes on
   `transactionId + status`. Keep this step regardless of signature status.
 
 ## Links
 
-- API contract (source of truth): [`../../CONTRACT.md`](../../CONTRACT.md)
+- API reference: [`../../CONTRACT.md`](../../CONTRACT.md)
 - Narrative docs: [`../../docs/`](../../docs/)
 - Laravel usage examples: [`../../examples/laravel/`](../../examples/laravel/)
 - Vanilla PHP SDK: [`../php/`](../php/)

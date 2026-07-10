@@ -5,7 +5,7 @@ recipient's mobile-money account.
 
 - **Auth:** `X-API-KEY` (see [Authentication](02-authentication.md)).
 - **Headers:** `X-API-KEY` (required), `X-Idempotency-Key` (optional, recommended
-  — see [Idempotency](10-idempotency.md)), `Content-Type: application/json`.
+  — see [Idempotency](06-idempotency.md)), `Content-Type: application/json`.
 
 Payout uses the **same `PaymentRequest` body and the same `PaymentResult`
 response** as [collect](03-collect.md). The difference is direction: here
@@ -19,7 +19,7 @@ response** as [collect](03-collect.md). The difference is direction: here
 | `currency` | string (ISO-4217) | ✅ | `XAF` / `XOF`; must match the country |
 | `amount` | number | ✅ | whole number, 100–500000 |
 | `mobile_number` | string | ✅ | **recipient's** mobile-money number |
-| `payment_method` | string | ✅ | provider name (see [Reference](14-reference.md)) |
+| `payment_method` | string | ✅ | provider name (see [Reference](10-reference.md)) |
 | `transaction_id` | string | ✅ | **your** unique reference for this transaction |
 | `beneficiary_name` | string | ❌ | **recipient's** name |
 | `description` | string | ❌ | free text |
@@ -42,7 +42,7 @@ response** as [collect](03-collect.md). The difference is direction: here
 On a payout, `fee_bearer=CUSTOMER` **nets the fee out of the amount** so that the
 recipient/merchant economics match `amount`. With the default `MERCHANT`, the fee
 is charged on top and the merchant absorbs it. See
-[Fees & Fee Bearer](11-fees-and-fee-bearer.md) for a worked numeric example.
+[Fees & Fee Bearer](07-fees-and-fee-bearer.md) for a worked numeric example.
 
 ## Example
 
@@ -55,7 +55,7 @@ curl -X POST "https://api.marvincorporate.co/api/v1/payment/payout" \
     "country_code": "CM",
     "currency": "XAF",
     "amount": 10000,
-    "mobile_number": "237670000002",
+    "mobile_number": "2376XXXXXXXX",
     "payment_method": "mtn_cm",
     "transaction_id": "payout-5502",
     "beneficiary_name": "Kofi Mensah",
@@ -78,7 +78,5 @@ curl -X POST "https://api.marvincorporate.co/api/v1/payment/payout" \
 
 As with collect, payouts are asynchronous. Confirm via
 `GET {BASE}/v1/payment/status/{transaction_id}` (see
-[Transaction Status](09-transaction-status.md)) and/or
-[Webhooks](12-webhooks.md).
-
-To send many payouts at once, see [Bulk Payout](05-bulk-payout.md).
+[Transaction Status](05-transaction-status.md)) and/or
+[Webhooks](08-webhooks.md).

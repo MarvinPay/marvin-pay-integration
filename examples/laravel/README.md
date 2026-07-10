@@ -20,7 +20,7 @@ php artisan vendor:publish --tag=marvinpay-config
 ```dotenv
 MARVIN_API_KEY=your_api_key
 MARVIN_BASE_URL=https://api.marvincorporate.co/api
-MARVIN_WEBHOOK_SECRET=          # unused today — webhooks are UNSIGNED
+MARVIN_WEBHOOK_SECRET=          # your webhook secret (enables signed webhook deliveries)
 ```
 
 ## Collect + wait
@@ -40,11 +40,13 @@ Register a route (see `WebhookRoutesExample.php`) behind the
 require base_path('vendor/marvinpay/laravel/routes/marvinpay.php');
 ```
 
-**Honesty caveat:** webhooks are effectively **UNSIGNED today**. The middleware
-logs-and-passes when no signature/secret is present (it only rejects a genuine
-mismatch). Always confirm out-of-band via `MarvinPay::getStatus($transactionId)`
-before fulfilling orders, and dedupe on `transactionId + status`. The package's
-`WebhookController` already does this.
+**Verify, then always confirm.** Marvin Pay signs webhook deliveries with an
+HMAC-SHA256 signature in the `X-Webhook-Signature` header when your account has a
+webhook secret configured. The middleware verifies it when a secret and signature
+are present and rejects a genuine mismatch; when either is absent it logs and passes
+through. Because deliveries are at-least-once, always confirm out-of-band via
+`MarvinPay::getStatus($transactionId)` before fulfilling orders, and dedupe on
+`transactionId + status`. The package's `WebhookController` already does this.
 
 ## Links
 

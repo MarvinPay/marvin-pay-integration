@@ -9,7 +9,7 @@ Config is read from the environment:
     MARVIN_COUNTRY      (optional)  ISO-3166 alpha-2, default "CM"
     MARVIN_CURRENCY     (optional)  ISO-4217, default "XAF"
     MARVIN_PAYMENT_METHOD (optional) provider name, default "mtn_cm"
-    MARVIN_MOBILE_NUMBER (optional) payer number, default "237670000001"
+    MARVIN_MOBILE_NUMBER (optional) payer number (test number provided by Marvin Pay)
     MARVIN_AMOUNT       (optional)  whole number, default 5000
 
 Usage:
@@ -43,7 +43,7 @@ def main():
         "currency": os.environ.get("MARVIN_CURRENCY", "XAF"),
         # Whole number only (XAF/XOF have no minor units), range 100..500000.
         "amount": int(os.environ.get("MARVIN_AMOUNT", "5000")),
-        "mobile_number": os.environ.get("MARVIN_MOBILE_NUMBER", "237670000001"),
+        "mobile_number": os.environ.get("MARVIN_MOBILE_NUMBER", "<your-test-msisdn>"),
         "payment_method": os.environ.get("MARVIN_PAYMENT_METHOD", "mtn_cm"),
         "transaction_id": transaction_id,
         "description": "SDK example collect",

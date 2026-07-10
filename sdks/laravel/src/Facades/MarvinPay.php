@@ -13,10 +13,6 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getFees(array $params)
  * @method static array getPaymentMethods(string $countryCode)
  * @method static array waitForCompletion(string $transactionId, array $opts = [])
- * @method static array payInvoice(string $reference, array $payInvoiceRequest)
- * @method static array contributeCampaign(string $reference, array $contributeRequest)
- * @method static array payQr(string $qrReference, array $qrPaymentRequest)
- * @method static array getQrStatus(string $transactionId)
  * @method static array getLastResponseHeaders()
  *
  * @see \MarvinPay\Laravel\MarvinPay

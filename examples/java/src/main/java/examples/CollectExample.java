@@ -49,7 +49,7 @@ public final class CollectExample {
                 .countryCode("CM")            // currency + country ALWAYS travel together
                 .currency("XAF")
                 .amount(5000L)                // whole number, 100–500000
-                .mobileNumber("237670000001") // the payer's mobile-money number
+                .mobileNumber("<your-test-msisdn>") // the payer's mobile-money number
                 .paymentMethod("mtn_cm")      // provider name; see getPaymentMethods("CM")
                 .transactionId(transactionId)
                 .description("SDK demo collect")

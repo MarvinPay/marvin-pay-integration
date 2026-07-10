@@ -9,17 +9,16 @@
  *   # or:  node --env-file=.env webhook-server.js
  *
  * ============================================================================
- *  HONESTY CAVEAT — webhooks are UNSIGNED today (CONTRACT.md §8.5).
+ *  VERIFY, THEN ALWAYS CONFIRM (CONTRACT.md §8.5).
  * ============================================================================
- *  `verifyWebhookSignature` is INERT right now: no webhookSecret is populated by
- *  the backend, so no `X-Webhook-Signature` header arrives, and it returns false.
- *  Therefore we NEVER trust the webhook on its own:
+ *  `verifyWebhookSignature` checks the `X-Webhook-Signature` header (HMAC-SHA256
+ *  over the raw body, sent as `sha256=<hex>`). Configure MARVIN_WEBHOOK_SECRET to
+ *  enable signed deliveries. Because deliveries are at-least-once, we NEVER trust
+ *  the webhook on its own:
  *    1. Confirm out-of-band via client.getStatus(transactionId) before acting.
  *    2. Dedupe on transactionId + status (events may be redelivered).
  *    3. Respond 2xx fast; do the real work after acking.
- *  The signature check is wired in anyway — it will start passing automatically
- *  once backend signing ships and MARVIN_WEBHOOK_SECRET is set. Keep the
- *  getStatus confirmation regardless.
+ *  Keep the getStatus confirmation regardless of the signature result.
  * ============================================================================
  */
 
@@ -38,7 +37,7 @@ const client = new MarvinPayClient({
   baseUrl: process.env.MARVIN_BASE_URL,
 });
 
-const webhookSecret = process.env.MARVIN_WEBHOOK_SECRET || ''; // inert today
+const webhookSecret = process.env.MARVIN_WEBHOOK_SECRET || '';
 const port = Number(process.env.PORT) || 3000;
 
 // Demo-only dedupe store. In production use a durable store (Redis/DB) so
@@ -48,11 +47,11 @@ const processed = new Set();
 const app = express();
 
 // Capture the RAW body (Buffer) — do NOT let JSON middleware re-serialize it, or
-// the HMAC will not match once signing ships. Use a hard-to-guess path.
+// the HMAC signature check will not match. Use a hard-to-guess path.
 app.post('/webhooks/marvin', express.raw({ type: '*/*' }), async (req, res) => {
   const raw = req.body; // Buffer
 
-  // Inert today (returns false). Logged for visibility once signing ships.
+  // Returns false when the secret or signature is missing. Logged for visibility.
   const signatureValid = verifyWebhookSignature(
     raw,
     req.get('X-Webhook-Signature'),
@@ -82,7 +81,7 @@ app.post('/webhooks/marvin', express.raw({ type: '*/*' }), async (req, res) => {
     event: event.event,
     transactionId: event.transactionId,
     status: event.status,
-    signatureValid, // false today — see caveat
+    signatureValid, // false when secret/signature missing — confirm via getStatus regardless
     attempt: req.get('X-Webhook-Attempt'),
     deliveryId: req.get('X-Webhook-Delivery-Id'),
   });

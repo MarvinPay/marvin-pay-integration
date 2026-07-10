@@ -34,7 +34,7 @@ async function main() {
     country_code: 'CM', // currency + country always travel together
     currency: 'XAF',
     amount: 5000, // whole number, 100–500000
-    mobile_number: '237670000001',
+    mobile_number: '<your-test-msisdn>',
     payment_method: 'mtn_cm', // from client.getPaymentMethods('CM')
     transaction_id: transactionId,
     beneficiary_name: 'Jane Payer',

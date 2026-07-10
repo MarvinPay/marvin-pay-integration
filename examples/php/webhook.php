@@ -11,7 +11,7 @@ declare(strict_types=1);
  *   MARVIN_API_KEY=sk_... php -S 127.0.0.1:8080 examples/php/webhook.php
  *
  * Env: MARVIN_API_KEY (required to confirm), MARVIN_BASE_URL (optional),
- *      MARVIN_WEBHOOK_SECRET (optional; unused today — webhooks are UNSIGNED).
+ *      MARVIN_WEBHOOK_SECRET (optional; enables signed webhook deliveries).
  */
 
 require __DIR__ . '/_bootstrap.php';
@@ -25,10 +25,10 @@ $raw = file_get_contents('php://input') ?: '';
 $signature = $_SERVER['HTTP_X_WEBHOOK_SIGNATURE'] ?? null;
 $secret = marvin_env('MARVIN_WEBHOOK_SECRET', '');
 
-// 2) Best-effort signature check. NOTE: webhooks are UNSIGNED today, so this
-//    returns false in production right now. Do NOT trust it as your only anchor.
+// 2) Signature check. Returns false when the secret or signature is missing.
+//    Because deliveries are at-least-once, do NOT trust it as your only anchor.
 $verified = WebhookVerifier::verify($raw, $signature, (string) $secret);
-error_log('MarvinPay webhook signature verified=' . ($verified ? 'true' : 'false (unsigned today)'));
+error_log('MarvinPay webhook signature verified=' . ($verified ? 'true' : 'false'));
 
 $event = json_decode($raw, true);
 if (!is_array($event)) {
@@ -55,8 +55,8 @@ if (is_string($transactionId) && $transactionId !== '') {
     @file_put_contents($seenFile, json_encode($seen));
 }
 
-// 4) CONFIRM out-of-band before acting. This is mandatory while webhooks are
-//    unsigned — never fulfil an order on the webhook payload alone.
+// 4) CONFIRM out-of-band before acting. This is mandatory because deliveries are
+//    at-least-once — never fulfil an order on the webhook payload alone.
 if (is_string($transactionId) && $transactionId !== '') {
     $client = new MarvinPayClient(
         marvin_env('MARVIN_API_KEY', ''),

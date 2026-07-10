@@ -9,12 +9,10 @@ import java.time.Duration;
  * <ul>
  *   <li>{@code baseUrl} = {@value #DEFAULT_BASE_URL} (production, note the trailing {@code /api}).</li>
  *   <li>{@code timeout} = 30s (used for both connect and per-request read timeout).</li>
- *   <li>{@code bearerToken} = {@code null} (only needed for the JWT/portal endpoints).</li>
  * </ul>
  *
  * <p>Build with {@link #builder()}. At minimum set the {@code apiKey} for the
- * {@code X-API-KEY} payment surface; set {@code bearerToken} in addition if you
- * intend to call JWT-only endpoints with a portal token you already hold.
+ * {@code X-API-KEY} payment surface.
  */
 public final class MarvinPayConfig {
 
@@ -28,13 +26,11 @@ public final class MarvinPayConfig {
 
     private final String apiKey;
     private final String baseUrl;
-    private final String bearerToken;
     private final Duration timeout;
 
     private MarvinPayConfig(Builder b) {
         this.apiKey = b.apiKey;
         this.baseUrl = stripTrailingSlash(b.baseUrl != null ? b.baseUrl : DEFAULT_BASE_URL);
-        this.bearerToken = b.bearerToken;
         this.timeout = b.timeout != null ? b.timeout : DEFAULT_TIMEOUT;
     }
 
@@ -45,10 +41,6 @@ public final class MarvinPayConfig {
     /** Base URL with any trailing slash removed (paths are appended as {@code /v1/...}). */
     public String getBaseUrl() {
         return baseUrl;
-    }
-
-    public String getBearerToken() {
-        return bearerToken;
     }
 
     public Duration getTimeout() {
@@ -74,7 +66,6 @@ public final class MarvinPayConfig {
     public static final class Builder {
         private String apiKey;
         private String baseUrl;
-        private String bearerToken;
         private Duration timeout;
 
         public Builder apiKey(String apiKey) {
@@ -84,11 +75,6 @@ public final class MarvinPayConfig {
 
         public Builder baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
-            return this;
-        }
-
-        public Builder bearerToken(String bearerToken) {
-            this.bearerToken = bearerToken;
             return this;
         }
 

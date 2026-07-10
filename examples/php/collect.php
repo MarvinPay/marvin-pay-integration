@@ -30,7 +30,7 @@ try {
         'country_code'   => 'CM',
         'currency'       => 'XAF',      // currency + country ALWAYS travel together
         'amount'         => 5000,        // whole number, 100–500000
-        'mobile_number'  => '237670000001',
+        'mobile_number'  => '<your-test-msisdn>',
         'payment_method' => 'mtn_cm',    // see getPaymentMethods('CM')
         'transaction_id' => $transactionId,
         'description'    => 'Order #1001',

@@ -1,22 +1,22 @@
 """Webhook helpers for Marvin Pay.
 
-.. warning::
+.. note::
 
-    **Outbound webhooks are effectively UNSIGNED today (contract §8.5).**
-    ``webhookSecret`` is not populated by any backend code path, so
-    ``X-Webhook-Signature`` is not sent, and the HMAC base string is not yet
-    aligned with this verifier. Therefore ``verify_signature`` is currently
-    **inert** in production: with no signature header it returns ``False``.
+    Marvin Pay signs webhook deliveries with an HMAC-SHA256 signature in the
+    ``X-Webhook-Signature`` header (format ``sha256=<hex>``) when your account
+    has a webhook secret configured. Verify it against your webhook secret with
+    ``verify_signature``.
 
-    Regardless of signing status, **always confirm every webhook out-of-band**
-    with ``MarvinPayClient.get_status(transaction_id)`` before acting on it
+    Regardless of the signature, and because deliveries are at-least-once,
+    **always confirm every webhook out-of-band** with
+    ``MarvinPayClient.get_status(transaction_id)`` before acting on it
     (fulfilling orders, crediting users, etc.), and **dedupe on
-    ``transactionId`` + ``status``** because the same event may be delivered more
-    than once.
+    ``transactionId`` + ``status``** because the same event may be delivered
+    more than once.
 
-    ``verify_signature`` implements the *intended* scheme (HMAC-SHA256 over the
-    raw body, ``sha256=`` prefix stripped, constant-time compare). It is safe to
-    wire in now — it becomes effective automatically once backend signing lands.
+    ``verify_signature`` computes ``HMAC-SHA256(secret, raw_body)`` as lowercase
+    hex and compares it in constant time against the header value with the
+    ``sha256=`` prefix stripped.
 """
 
 from __future__ import annotations
@@ -47,17 +47,16 @@ def verify_signature(raw_body, signature_header, secret):
 
     .. note::
 
-        Webhooks are unsigned in production right now (see module docstring). When
-        ``signature_header`` is missing/empty or ``secret`` is falsy this returns
-        ``False`` — so do not gate acceptance solely on this. Always confirm via
-        ``get_status``.
+        When ``signature_header`` is missing/empty or ``secret`` is falsy this
+        returns ``False`` — so do not gate acceptance solely on this. Always
+        confirm via ``get_status`` (deliveries are at-least-once).
 
     Args:
         raw_body: The exact raw request body (``bytes`` or ``str``). Must be the
             unparsed bytes as received — re-serializing parsed JSON can change
             bytes and break the HMAC.
         signature_header: The ``X-Webhook-Signature`` header value, or ``None``.
-        secret: Your ``webhookSecret``.
+        secret: Your webhook secret.
 
     Returns:
         ``True`` only if a valid signature is present and matches; ``False``

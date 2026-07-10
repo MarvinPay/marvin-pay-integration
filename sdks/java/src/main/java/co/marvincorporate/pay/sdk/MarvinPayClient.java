@@ -31,13 +31,8 @@ import java.util.Map;
  *
  * <h2>Authentication</h2>
  * <ul>
- *   <li>{@code X-API-KEY} is sent on the authenticated payment surface when an
- *       {@code apiKey} is configured (collect, payout, status, fees, payment-methods).</li>
- *   <li>{@code Authorization: Bearer} is sent when a {@code bearerToken} is configured
- *       (only needed for JWT/portal endpoints, which this thin client does not expose
- *       beyond passing the header).</li>
- *   <li>The hosted-pay helpers ({@code payInvoice}, {@code contributeCampaign},
- *       {@code payQr}, {@code getQrStatus}) are <b>public</b> and send no auth header.</li>
+ *   <li>{@code X-API-KEY} is sent on the payment surface when an {@code apiKey} is
+ *       configured (collect, payout, status, fees, payment-methods).</li>
  * </ul>
  *
  * <h2>Idempotency</h2>
@@ -191,55 +186,6 @@ public class MarvinPayClient {
     }
 
     // =====================================================================
-    // Public "hosted pay" helpers (no API key sent; auth resolved server-side)
-    // =====================================================================
-
-    /**
-     * {@code POST /v1/invoices/{reference}/pay}. Populate {@link PaymentRequest} with
-     * {@code countryCode}, {@code currency}, {@code mobileNumber}, {@code paymentMethod},
-     * {@code beneficiaryName} (required), and optionally {@code customerEmail}. The invoice
-     * already carries the amount, so leave {@code amount} unset.
-     */
-    public PaymentResult payInvoice(String reference, PaymentRequest req) {
-        requireNonBlank(reference, "reference");
-        return post("/v1/invoices/" + encodePathSegment(reference) + "/pay",
-                req, null, false, PaymentResult.class);
-    }
-
-    /**
-     * {@code POST /v1/campaigns/{reference}/contribute}. Set {@code amount} (min 100) plus
-     * the payer fields ({@code countryCode}, {@code currency}, {@code mobileNumber},
-     * {@code paymentMethod}, {@code beneficiaryName}, optional {@code customerEmail}).
-     */
-    public PaymentResult contributeCampaign(String reference, PaymentRequest req) {
-        requireNonBlank(reference, "reference");
-        return post("/v1/campaigns/" + encodePathSegment(reference) + "/contribute",
-                req, null, false, PaymentResult.class);
-    }
-
-    /**
-     * {@code POST /v1/merchant/qrcode/pay/{qrReference}}. {@code amount} is ignored if the
-     * QR has a fixed amount. The merchant API key is resolved server-side from the QR
-     * reference — never send it.
-     */
-    public PaymentResult payQr(String qrReference, PaymentRequest req) {
-        requireNonBlank(qrReference, "qrReference");
-        return post("/v1/merchant/qrcode/pay/" + encodePathSegment(qrReference),
-                req, null, false, PaymentResult.class);
-    }
-
-    /**
-     * {@code GET /v1/merchant/qrcode/status/{transactionId}} — public poll used by the
-     * QR/invoice/campaign pay pages. Returns a plain map with keys {@code transactionId},
-     * {@code status}, {@code amount}, {@code currency}, {@code paymentMethod},
-     * {@code mobileNumber}, {@code timestamp}. No merchant/fee data is exposed. Poll ~every 5s.
-     */
-    public Map<String, Object> getQrStatus(String transactionId) {
-        requireNonBlank(transactionId, "transactionId");
-        return getMap("/v1/merchant/qrcode/status/" + encodePathSegment(transactionId), false);
-    }
-
-    // =====================================================================
     // Internals
     // =====================================================================
 
@@ -273,24 +219,6 @@ public class MarvinPayClient {
         return handle(resp, responseType);
     }
 
-    private Map<String, Object> getMap(String path, boolean auth) {
-        HttpRequest req = requestBuilder(path, auth).GET().build();
-        HttpResponse<String> resp = send(req, true);
-        int code = resp.statusCode();
-        if (code < 200 || code >= 300) {
-            throw new MarvinPayException(code, extractMessage(resp.body(), code), resp.body());
-        }
-        String body = resp.body();
-        if (body == null || body.isBlank()) {
-            return Map.of();
-        }
-        try {
-            return mapper.readValue(body, new TypeReference<Map<String, Object>>() {});
-        } catch (IOException e) {
-            throw new MarvinPayException("Failed to parse response JSON: " + e.getMessage(), e);
-        }
-    }
-
     private HttpRequest.Builder requestBuilder(String path, boolean auth) {
         HttpRequest.Builder b = HttpRequest.newBuilder(URI.create(config.getBaseUrl() + path))
                 .timeout(config.getTimeout())
@@ -298,9 +226,6 @@ public class MarvinPayClient {
         if (auth) {
             if (config.getApiKey() != null) {
                 b.header("X-API-KEY", config.getApiKey());
-            }
-            if (config.getBearerToken() != null) {
-                b.header("Authorization", "Bearer " + config.getBearerToken());
             }
         }
         return b;

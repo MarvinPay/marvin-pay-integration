@@ -38,10 +38,6 @@ Known fields (treat the live response as authoritative for any extras):
 | `amountReceivedByRecipient` | what the recipient receives (payout side) |
 | *(fee amount)* | the fee itself |
 
-The public hosted-pay flows expose the same split as a **`FeeQuote`** via their
-`/quote` endpoints — see [Invoices](06-invoices.md), [Campaigns](07-campaigns.md),
-[QR Codes](08-qr-codes.md).
-
 ## MERCHANT vs CUSTOMER semantics
 
 - **`fee_bearer` omitted or null ⇒ `MERCHANT`.**
@@ -83,4 +79,4 @@ recipient receives.
 Webhook payloads carry the direction-aware split too: collect/credit events
 include `amountChargedToCustomer` + `amountCreditedToMerchant`; payout/debit
 events include `amountDebitedFromMerchant` + `amountReceivedByRecipient`, plus
-`feeBearer`. See [Webhooks](12-webhooks.md).
+`feeBearer`. See [Webhooks](08-webhooks.md).
