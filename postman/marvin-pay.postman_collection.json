@@ -1,0 +1,151 @@
+{
+  "info": {
+    "name": "Marvin Pay — Merchant API",
+    "description": "Merchant integration collection for Marvin Pay (mobile money, XAF/XOF).\n\nSet the `baseUrl` and `apiKey` collection variables (or import the environment).\nBase URL includes the `/api` context path, e.g. https://api.marvincorporate.co/api\n\nAuth: the `X-API-KEY` header (set at the collection level) authenticates the /v1/payment/** endpoints. Public hosted-pay endpoints need no auth.\n\nNOTE: mobile-money is asynchronous — collect/payout usually return PENDING. Confirm via 'Get Transaction Status'.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.marvincorporate.co/api" },
+    { "key": "apiKey", "value": "REPLACE_WITH_YOUR_API_KEY" },
+    { "key": "transactionId", "value": "MARVIN-0001" },
+    { "key": "countryCode", "value": "CM" },
+    { "key": "currency", "value": "XAF" },
+    { "key": "invoiceRef", "value": "" },
+    { "key": "campaignRef", "value": "" },
+    { "key": "qrRef", "value": "" }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      { "key": "key", "value": "X-API-KEY", "type": "string" },
+      { "key": "value", "value": "{{apiKey}}", "type": "string" },
+      { "key": "in", "value": "header", "type": "string" }
+    ]
+  },
+  "item": [
+    {
+      "name": "Payments (X-API-KEY)",
+      "item": [
+        {
+          "name": "Collect (payer -> merchant)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Idempotency-Key", "value": "{{$guid}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/v1/payment/collect", "host": ["{{baseUrl}}"], "path": ["v1", "payment", "collect"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"country_code\": \"CM\",\n  \"currency\": \"XAF\",\n  \"amount\": 5000,\n  \"mobile_number\": \"2376XXXXXXXX\",\n  \"payment_method\": \"mtn_cm\",\n  \"transaction_id\": \"{{transactionId}}\",\n  \"beneficiary_name\": \"John Doe\",\n  \"description\": \"Order #123\",\n  \"customer_email\": \"john@example.com\",\n  \"fee_bearer\": \"MERCHANT\"\n}"
+            },
+            "description": "Collect money from a customer's mobile-money account. Expect transaction_status PENDING, then confirm via status/webhook."
+          }
+        },
+        {
+          "name": "Payout (merchant -> recipient)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Idempotency-Key", "value": "{{$guid}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/v1/payment/payout", "host": ["{{baseUrl}}"], "path": ["v1", "payment", "payout"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"country_code\": \"CM\",\n  \"currency\": \"XAF\",\n  \"amount\": 5000,\n  \"mobile_number\": \"2376XXXXXXXX\",\n  \"payment_method\": \"mtn_cm\",\n  \"transaction_id\": \"{{transactionId}}\",\n  \"beneficiary_name\": \"Jane Doe\",\n  \"description\": \"Supplier payout\",\n  \"fee_bearer\": \"MERCHANT\"\n}"
+            },
+            "description": "Send money to a recipient's mobile-money account."
+          }
+        },
+        {
+          "name": "Get Transaction Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/payment/status/{{transactionId}}", "host": ["{{baseUrl}}"], "path": ["v1", "payment", "status", "{{transactionId}}"] },
+            "description": "Authoritative outcome check. transaction_status: SUCCESSFUL | FAILED | PENDING."
+          }
+        },
+        {
+          "name": "Get Fees (estimate)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/payment/fees?currency={{currency}}&amount=5000&direction=COLLECT&fee_bearer=MERCHANT",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "payment", "fees"],
+              "query": [
+                { "key": "currency", "value": "{{currency}}" },
+                { "key": "amount", "value": "5000" },
+                { "key": "direction", "value": "COLLECT" },
+                { "key": "fee_bearer", "value": "MERCHANT" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Payment Methods",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/payment/payment-methods/{{countryCode}}", "host": ["{{baseUrl}}"], "path": ["v1", "payment", "payment-methods", "{{countryCode}}"] },
+            "description": "Returns the valid payment_method provider names for the country."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hosted Pay (public, no auth)",
+      "item": [
+        {
+          "name": "Get Invoice",
+          "request": { "method": "GET", "header": [], "auth": { "type": "noauth" }, "url": { "raw": "{{baseUrl}}/v1/invoices/{{invoiceRef}}", "host": ["{{baseUrl}}"], "path": ["v1", "invoices", "{{invoiceRef}}"] } }
+        },
+        {
+          "name": "Pay Invoice",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/v1/invoices/{{invoiceRef}}/pay", "host": ["{{baseUrl}}"], "path": ["v1", "invoices", "{{invoiceRef}}", "pay"] },
+            "body": { "mode": "raw", "raw": "{\n  \"country_code\": \"CM\",\n  \"currency\": \"XAF\",\n  \"mobile_number\": \"2376XXXXXXXX\",\n  \"payment_method\": \"mtn_cm\",\n  \"beneficiary_name\": \"John Doe\",\n  \"customer_email\": \"john@example.com\"\n}" }
+          }
+        },
+        {
+          "name": "Get Campaign",
+          "request": { "method": "GET", "header": [], "auth": { "type": "noauth" }, "url": { "raw": "{{baseUrl}}/v1/campaigns/{{campaignRef}}", "host": ["{{baseUrl}}"], "path": ["v1", "campaigns", "{{campaignRef}}"] } }
+        },
+        {
+          "name": "Contribute to Campaign",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/v1/campaigns/{{campaignRef}}/contribute", "host": ["{{baseUrl}}"], "path": ["v1", "campaigns", "{{campaignRef}}", "contribute"] },
+            "body": { "mode": "raw", "raw": "{\n  \"country_code\": \"CM\",\n  \"currency\": \"XAF\",\n  \"amount\": 5000,\n  \"mobile_number\": \"2376XXXXXXXX\",\n  \"payment_method\": \"mtn_cm\",\n  \"beneficiary_name\": \"John Doe\",\n  \"customer_email\": \"john@example.com\"\n}" }
+          }
+        },
+        {
+          "name": "Resolve QR",
+          "request": { "method": "GET", "header": [], "auth": { "type": "noauth" }, "url": { "raw": "{{baseUrl}}/v1/merchant/qrcode/resolve/{{qrRef}}", "host": ["{{baseUrl}}"], "path": ["v1", "merchant", "qrcode", "resolve", "{{qrRef}}"] } }
+        },
+        {
+          "name": "Pay QR",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/v1/merchant/qrcode/pay/{{qrRef}}", "host": ["{{baseUrl}}"], "path": ["v1", "merchant", "qrcode", "pay", "{{qrRef}}"] },
+            "body": { "mode": "raw", "raw": "{\n  \"country_code\": \"CM\",\n  \"currency\": \"XAF\",\n  \"amount\": 5000,\n  \"mobile_number\": \"2376XXXXXXXX\",\n  \"payment_method\": \"mtn_cm\",\n  \"beneficiary_name\": \"John Doe\",\n  \"customer_email\": \"john@example.com\"\n}" }
+          }
+        },
+        {
+          "name": "QR / Hosted Pay Status (5s poll)",
+          "request": { "method": "GET", "header": [], "auth": { "type": "noauth" }, "url": { "raw": "{{baseUrl}}/v1/merchant/qrcode/status/{{transactionId}}", "host": ["{{baseUrl}}"], "path": ["v1", "merchant", "qrcode", "status", "{{transactionId}}"] } }
+        }
+      ]
+    }
+  ]
+}

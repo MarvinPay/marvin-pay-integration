@@ -1,0 +1,20 @@
+{
+  "name": "marvin-pay-node-examples",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Runnable examples for the Marvin Pay Node.js SDK.",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "collect": "node collect.js",
+    "payout": "node payout.js",
+    "poll": "node poll-status.js",
+    "pay-invoice": "node pay-invoice.js",
+    "webhook": "node webhook-server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

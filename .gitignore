@@ -1,0 +1,34 @@
+# Secrets / local env
+.env
+*.local
+
+# Node
+node_modules/
+npm-debug.log*
+package-lock.json
+yarn.lock
+
+# PHP / Composer
+vendor/
+composer.lock
+
+# Java / Maven / Gradle
+target/
+build/
+*.class
+.gradle/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

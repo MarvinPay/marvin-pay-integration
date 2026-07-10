@@ -1,0 +1,37 @@
+{
+  "name": "@marvinpay/sdk",
+  "version": "0.1.0",
+  "description": "Lightweight, zero-dependency Node.js SDK for the Marvin Pay payment gateway (mobile-money collect/payout, status polling, hosted-pay flows, webhook verification).",
+  "type": "commonjs",
+  "main": "marvin-pay.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./marvin-pay.js"
+    },
+    "./webhook-verifier": {
+      "require": "./webhook-verifier.js"
+    }
+  },
+  "files": [
+    "marvin-pay.js",
+    "webhook-verifier.js",
+    "index.d.ts",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {},
+  "keywords": [
+    "marvin-pay",
+    "payments",
+    "payment-gateway",
+    "mobile-money",
+    "xaf",
+    "xof",
+    "sdk"
+  ],
+  "license": "UNLICENSED"
+}
