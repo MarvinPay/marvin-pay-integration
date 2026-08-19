@@ -1,5 +1,7 @@
 # WordPress Plugin
 
+> 🇫🇷 [Version française](12-wordpress.fr.md)
+
 The official Marvin Pay WordPress plugin turns any WordPress site into a
 mobile-money-accepting site in minutes — with or without WooCommerce.
 

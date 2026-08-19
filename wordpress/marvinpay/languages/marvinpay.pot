@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-18T17:16:36+00:00\n"
+"POT-Creation-Date: 2026-08-19T13:14:17+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: marvinpay\n"
@@ -93,12 +93,16 @@ msgstr ""
 msgid "Could not start the payment — please try again."
 msgstr ""
 
-#: includes/class-marvinpay-ajax.php:211
-#: includes/class-marvinpay-ajax.php:215
+#: includes/class-marvinpay-ajax.php:193
+msgid "The payment service is temporarily unavailable — please try again."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:214
+#: includes/class-marvinpay-ajax.php:218
 msgid "Unknown transaction."
 msgstr ""
 
-#: includes/class-marvinpay-ajax.php:254
+#: includes/class-marvinpay-ajax.php:257
 msgid "Too many payment attempts — please wait a few minutes and try again."
 msgstr ""
 
@@ -113,15 +117,15 @@ msgstr ""
 msgid "Donate with Marvin Pay"
 msgstr ""
 
-#: includes/class-marvinpay-cron.php:25
+#: includes/class-marvinpay-cron.php:26
 msgid "Every 5 minutes (Marvin Pay reconciliation)"
 msgstr ""
 
-#: includes/class-marvinpay-cron.php:73
+#: includes/class-marvinpay-cron.php:74
 msgid "Marvin Pay: payment still unconfirmed after 24 hours — marked abandoned locally. A later confirmation will still be applied."
 msgstr ""
 
-#: includes/class-marvinpay-fulfillment.php:60
+#: includes/class-marvinpay-fulfillment.php:69
 msgid "Marvin Pay: payment failed."
 msgstr ""
 
@@ -203,114 +207,114 @@ msgstr ""
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:157
+#: includes/class-marvinpay-settings.php:168
 msgid "Not allowed."
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:160
+#: includes/class-marvinpay-settings.php:171
 msgid "Fill in the API key, base URL and country first, then save."
 msgstr ""
 
 #. translators: 1: country code, 2: provider list
-#: includes/class-marvinpay-settings.php:167
+#: includes/class-marvinpay-settings.php:178
 #, php-format
 msgid "Connected. Providers for %1$s: %2$s"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:190
+#: includes/class-marvinpay-settings.php:201
 msgid "Test mode is selected but no test base URL is set. The test environment URL is provided by Marvin Pay support — payments are disabled until it is configured."
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:198
+#: includes/class-marvinpay-settings.php:209
 msgid "Mode"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:201
+#: includes/class-marvinpay-settings.php:212
 msgid "Live"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:202
+#: includes/class-marvinpay-settings.php:213
 msgid "Test"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:207
+#: includes/class-marvinpay-settings.php:218
 msgid "Live API key"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:211
+#: includes/class-marvinpay-settings.php:222
 msgid "The stored key is kept unless you type a new one."
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:214
+#: includes/class-marvinpay-settings.php:225
 msgid "Test API key"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:220
+#: includes/class-marvinpay-settings.php:231
 msgid "Live base URL"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:226
+#: includes/class-marvinpay-settings.php:237
 msgid "Test base URL"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:227
+#: includes/class-marvinpay-settings.php:238
 msgid "Provided by Marvin Pay support"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:232
+#: includes/class-marvinpay-settings.php:243
 msgid "Country"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:241
+#: includes/class-marvinpay-settings.php:252
 msgid "The currency follows the country automatically — they always travel together."
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:245
+#: includes/class-marvinpay-settings.php:256
 msgid "Webhook secret"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:249
+#: includes/class-marvinpay-settings.php:260
 msgid "Optional. Set the same secret on your Marvin Pay account to receive signed webhooks."
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:252
+#: includes/class-marvinpay-settings.php:263
 msgid "Webhook URL"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:254
+#: includes/class-marvinpay-settings.php:265
 msgid "Paste this URL into your Marvin Pay merchant portal as the account webhook URL (must be HTTPS)."
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:257
+#: includes/class-marvinpay-settings.php:268
 msgid "Success page"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:258
-#: includes/class-marvinpay-settings.php:263
+#: includes/class-marvinpay-settings.php:269
+#: includes/class-marvinpay-settings.php:274
 msgid "— stay in the payment window —"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:259
+#: includes/class-marvinpay-settings.php:270
 msgid "Optional page to redirect to after a successful widget payment (add the Payment Status widget to it)."
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:262
+#: includes/class-marvinpay-settings.php:273
 msgid "Failure page"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:266
+#: includes/class-marvinpay-settings.php:277
 msgid "On uninstall"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:268
+#: includes/class-marvinpay-settings.php:279
 msgid "Delete the transactions table and all settings when the plugin is uninstalled."
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:274
+#: includes/class-marvinpay-settings.php:285
 msgid "Connection test"
 msgstr ""
 
-#: includes/class-marvinpay-settings.php:276
+#: includes/class-marvinpay-settings.php:287
 msgid "Test connection"
 msgstr ""
 
