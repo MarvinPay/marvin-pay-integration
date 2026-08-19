@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "marvinpay/inline-form",
+	"title": "Marvin Pay Form",
+	"category": "widgets",
+	"icon": "feedback",
+	"description": "A full Marvin Pay payment form embedded in the page.",
+	"textdomain": "marvinpay",
+	"attributes": {
+		"amount": { "type": "string", "default": "" },
+		"description": { "type": "string", "default": "" },
+		"showName": { "type": "boolean", "default": true },
+		"showEmail": { "type": "boolean", "default": true }
+	},
+	"editorScript": "marvinpay-block-inline-form"
+}

@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "marvinpay/donation-form",
+	"title": "Marvin Pay Donation",
+	"category": "widgets",
+	"icon": "heart",
+	"description": "Let visitors choose an amount and pay by mobile money.",
+	"textdomain": "marvinpay",
+	"attributes": {
+		"presets": { "type": "string", "default": "" },
+		"min": { "type": "string", "default": "" },
+		"max": { "type": "string", "default": "" },
+		"description": { "type": "string", "default": "" },
+		"buttonText": { "type": "string", "default": "" }
+	},
+	"editorScript": "marvinpay-block-donation-form"
+}

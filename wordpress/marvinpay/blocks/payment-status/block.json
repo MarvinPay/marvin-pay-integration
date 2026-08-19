@@ -1,0 +1,12 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "marvinpay/payment-status",
+	"title": "Marvin Pay Status",
+	"category": "widgets",
+	"icon": "yes-alt",
+	"description": "Shows a payment's outcome from the ?mp_ref= link parameter — put it on your success page.",
+	"textdomain": "marvinpay",
+	"attributes": {},
+	"editorScript": "marvinpay-block-payment-status"
+}

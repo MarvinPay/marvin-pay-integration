@@ -1,0 +1,86 @@
+/* Marvin Pay widgets — self-contained, theme-neutral, .marvinpay-* scoped. */
+
+.marvinpay-widget { margin: 0.5em 0; }
+
+.marvinpay-btn {
+	display: inline-flex; align-items: center; justify-content: center;
+	padding: 0.65em 1.4em; border-radius: 999px; border: 0; cursor: pointer;
+	font-size: 1rem; font-weight: 600; line-height: 1.2; text-decoration: none;
+}
+.marvinpay-btn-primary { background: linear-gradient(135deg, #f59e0b, #d59204); color: #fff; }
+.marvinpay-btn-primary:hover { filter: brightness(1.05); }
+.marvinpay-btn-primary:disabled { opacity: 0.6; cursor: wait; }
+.marvinpay-btn-ghost { background: transparent; color: inherit; text-decoration: underline; }
+
+.marvinpay-overlay {
+	position: fixed; inset: 0; z-index: 999999;
+	background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px);
+	display: flex; align-items: center; justify-content: center; padding: 1rem;
+}
+.marvinpay-modal {
+	background: #fff; color: #111827; width: 100%; max-width: 420px;
+	border-radius: 16px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+	max-height: 90vh; overflow-y: auto;
+}
+.marvinpay-head {
+	display: flex; align-items: center; justify-content: space-between;
+	padding: 1rem 1.25rem; border-bottom: 1px solid #e5e7eb;
+}
+.marvinpay-x { background: none; border: 0; font-size: 1rem; cursor: pointer; color: #6b7280; }
+.marvinpay-body { padding: 1.25rem; }
+
+.marvinpay-form { display: flex; flex-direction: column; gap: 0.9rem; }
+.marvinpay-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.marvinpay-label { font-size: 0.85rem; font-weight: 600; color: #374151; }
+.marvinpay-input {
+	padding: 0.6em 0.8em; border: 1px solid #d1d5db; border-radius: 8px;
+	font-size: 1rem; width: 100%; box-sizing: border-box; background: #fff; color: #111827;
+}
+.marvinpay-input:focus { outline: 2px solid #d59204; outline-offset: 1px; }
+
+.marvinpay-amount-fixed {
+	display: flex; justify-content: space-between; align-items: baseline;
+	padding: 0.6em 0.8em; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
+}
+.marvinpay-presets { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.marvinpay-preset {
+	padding: 0.35em 0.9em; border-radius: 999px; border: 1px solid #d1d5db;
+	background: #f9fafb; cursor: pointer; font-size: 0.9rem; color: #111827;
+}
+.marvinpay-preset:hover { border-color: #d59204; }
+
+.marvinpay-actions { display: flex; gap: 0.6rem; align-items: center; margin-top: 0.4rem; }
+.marvinpay-error { color: #b91c1c; font-size: 0.9rem; min-height: 1em; }
+.marvinpay-desc { color: #4b5563; margin: 0 0 0.8rem; }
+.marvinpay-ref { font-size: 0.85rem; color: #6b7280; word-break: break-all; }
+
+.marvinpay-icon { font-size: 2.2rem; line-height: 1; margin-bottom: 0.4rem; }
+.marvinpay-icon-success { color: #15803d; }
+.marvinpay-icon-failed { color: #b91c1c; }
+
+.marvinpay-spinner {
+	width: 2.2rem; height: 2.2rem; margin-bottom: 0.6rem;
+	border: 3px solid #e5e7eb; border-top-color: #d59204; border-radius: 50%;
+	animation: marvinpay-spin 0.9s linear infinite;
+}
+@keyframes marvinpay-spin { to { transform: rotate(360deg); } }
+
+/* status/receipt widget */
+.marvinpay-receipt {
+	border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.1rem 1.25rem; max-width: 420px;
+}
+.marvinpay-receipt dl { display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 1rem; margin: 0.6rem 0 0; }
+.marvinpay-receipt dt { font-weight: 600; color: #374151; }
+.marvinpay-receipt dd { margin: 0; color: #111827; }
+.marvinpay-badge {
+	display: inline-block; padding: 0.15em 0.7em; border-radius: 999px;
+	font-size: 0.8rem; font-weight: 700; letter-spacing: 0.02em;
+}
+.marvinpay-badge-successful { background: #dcfce7; color: #15803d; }
+.marvinpay-badge-failed { background: #fee2e2; color: #b91c1c; }
+.marvinpay-badge-pending, .marvinpay-badge-abandoned { background: #fef9c3; color: #a16207; }
+
+.marvinpay-config-error {
+	padding: 0.6em 0.9em; border: 1px dashed #f87171; border-radius: 8px;
+	color: #b91c1c; font-size: 0.9rem; background: #fef2f2;
+}

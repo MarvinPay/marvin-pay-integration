@@ -24,6 +24,7 @@ collection.
 | [`examples/`](examples/) | Runnable per-language examples: collect, payout, poll status, webhook server. |
 | [`postman/`](postman/) | Postman collection + environment for the merchant API. |
 | [`CONTRACT.md`](CONTRACT.md) | The authoritative API reference. |
+| [`wordpress/`](wordpress/) | Official WordPress plugin — WooCommerce gateway + payment widgets ([guide](docs/12-wordpress.md)). |
 
 ---
 
