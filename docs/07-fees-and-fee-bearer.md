@@ -19,7 +19,7 @@ so you can show the right numbers before the transaction runs.
 | `fee_bearer` | ❌ | `MERCHANT` (default) / `CUSTOMER` |
 
 ```bash
-curl -X GET "https://api.marvincorporate.co/api/v1/payment/fees?currency=XAF&amount=5000&direction=COLLECT&fee_bearer=MERCHANT" \
+curl -X GET "https://app.marvincorporate.co/api/v1/payment/fees?currency=XAF&amount=5000&direction=COLLECT&fee_bearer=MERCHANT" \
   -H "X-API-KEY: YOUR_API_KEY"
 ```
 

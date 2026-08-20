@@ -18,7 +18,7 @@ namespace MarvinPay;
  */
 class MarvinPayClient
 {
-    public const DEFAULT_BASE_URL = 'https://api.marvincorporate.co/api';
+    public const DEFAULT_BASE_URL = 'https://app.marvincorporate.co/api';
 
     private string $apiKey;
     private string $baseUrl;
@@ -30,7 +30,7 @@ class MarvinPayClient
     /**
      * @param string               $apiKey  merchant API key sent as `X-API-KEY`
      * @param array<string,mixed>  $options {
-     *     base_url?:     string  default https://api.marvincorporate.co/api
+     *     base_url?:     string  default https://app.marvincorporate.co/api
      *     timeout?:      int     request timeout in seconds (default 30)
      * }
      */

@@ -1,7 +1,7 @@
 # Marvin Pay — PHP SDK (`marvinpay/sdk`)
 
 A lightweight, **zero-dependency** PHP client for the
-[Marvin Pay](https://api.marvincorporate.co) mobile-money payment gateway.
+[Marvin Pay](https://app.marvincorporate.co) mobile-money payment gateway.
 Uses only cURL + `hash_hmac` from the standard library. PHP >= 8.1, PSR-4.
 
 > API reference: [`../../CONTRACT.md`](../../CONTRACT.md). Narrative docs:
@@ -44,7 +44,7 @@ use MarvinPay\MarvinPayClient;
 use MarvinPay\MarvinPayException;
 
 $client = new MarvinPayClient(getenv('MARVIN_API_KEY'), [
-    'base_url' => getenv('MARVIN_BASE_URL') ?: 'https://api.marvincorporate.co/api',
+    'base_url' => getenv('MARVIN_BASE_URL') ?: 'https://app.marvincorporate.co/api',
     // 'timeout'      => 30,
 ]);
 

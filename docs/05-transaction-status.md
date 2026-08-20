@@ -28,7 +28,7 @@ await the webhook.
 ## Example
 
 ```bash
-curl -X GET "https://api.marvincorporate.co/api/v1/payment/status/order-1001" \
+curl -X GET "https://app.marvincorporate.co/api/v1/payment/status/order-1001" \
   -H "X-API-KEY: YOUR_API_KEY"
 ```
 

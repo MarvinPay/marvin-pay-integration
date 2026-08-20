@@ -25,7 +25,7 @@ if (!$transactionId) {
 
 $client = new MarvinPayClient(
     marvin_env('MARVIN_API_KEY', 'YOUR_API_KEY'),
-    ['base_url' => marvin_env('MARVIN_BASE_URL', 'https://api.marvincorporate.co/api')]
+    ['base_url' => marvin_env('MARVIN_BASE_URL', 'https://app.marvincorporate.co/api')]
 );
 
 try {

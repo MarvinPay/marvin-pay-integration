@@ -28,7 +28,7 @@ from .errors import MarvinPayError
 
 __all__ = ["MarvinPayClient", "normalize_status"]
 
-DEFAULT_BASE_URL = "https://api.marvincorporate.co/api"
+DEFAULT_BASE_URL = "https://app.marvincorporate.co/api"
 
 # Normalized, SDK-facing status values (contract §2.1).
 STATUS_SUCCEEDED = "SUCCEEDED"

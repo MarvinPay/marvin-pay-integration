@@ -131,7 +131,7 @@ export interface WebhookEvent {
 export interface MarvinPayClientOptions {
   /** Merchant API key, sent as `X-API-KEY`. */
   apiKey?: string;
-  /** Defaults to `https://api.marvincorporate.co/api`. Must include `/api`. */
+  /** Defaults to `https://app.marvincorporate.co/api`. Must include `/api`. */
   baseUrl?: string;
   /** Per-request timeout in ms (default 30000). */
   timeoutMs?: number;

@@ -17,7 +17,7 @@ import java.time.Duration;
 public final class MarvinPayConfig {
 
     /** Production base URL. Includes the {@code /api} servlet context path. */
-    public static final String DEFAULT_BASE_URL = "https://api.marvincorporate.co/api";
+    public static final String DEFAULT_BASE_URL = "https://app.marvincorporate.co/api";
 
     /** Local/dev base URL, for convenience. */
     public static final String LOCAL_BASE_URL = "http://localhost:9090/api";
