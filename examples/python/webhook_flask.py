@@ -36,7 +36,7 @@ API_KEY = os.environ.get("MARVIN_API_KEY")
 if not API_KEY:
     sys.exit("Set MARVIN_API_KEY (see .env.example).")
 
-BASE_URL = os.environ.get("MARVIN_BASE_URL", "https://api.marvincorporate.co/api")
+BASE_URL = os.environ.get("MARVIN_BASE_URL", "https://app.marvincorporate.co/api")
 WEBHOOK_SECRET = os.environ.get("MARVIN_WEBHOOK_SECRET", "")
 
 client = MarvinPayClient(api_key=API_KEY, base_url=BASE_URL)

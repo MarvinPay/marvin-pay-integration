@@ -151,7 +151,7 @@ class MarvinPay
     //  Internals
     // ─────────────────────────────────────────────────────────────────────
 
-    private const DEFAULT_BASE_URL = 'https://api.marvincorporate.co/api';
+    private const DEFAULT_BASE_URL = 'https://app.marvincorporate.co/api';
 
     private function client(): PendingRequest
     {

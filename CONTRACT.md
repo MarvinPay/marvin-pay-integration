@@ -23,10 +23,10 @@
 
 - **Servlet context path is `/api`.** Every route below is served under `/api`,
   so the wire path for `/v1/payment/collect` is `POST /api/v1/payment/collect`.
-- **Production base URL:** `https://api.marvincorporate.co/api`
-- **Testing:** run against the test environment provided by Marvin Pay (see §8).
+- **Production base URL:** `https://app.marvincorporate.co/api`
+- **Test environment base URL:** `https://api.marvincorporate.co/api` (see §8).
 
-SDKs default `baseUrl` to `https://api.marvincorporate.co/api` and allow override.
+SDKs default `baseUrl` to `https://app.marvincorporate.co/api` and allow override.
 
 ---
 
@@ -290,9 +290,10 @@ configured via the portal / account update.
 
 ## 8. Testing
 
-Sandbox/test access, test credentials, and test phone numbers are provided by
-Marvin Pay on request — contact your Marvin Pay account manager. Run integrations
-against the test environment they provide before going live.
+The test environment lives at `https://api.marvincorporate.co/api`. Test
+credentials and test phone numbers are provided by Marvin Pay on request —
+contact your Marvin Pay account manager. Run integrations against the test
+environment before going live.
 
 ---
 

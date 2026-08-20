@@ -19,7 +19,7 @@ php artisan vendor:publish --tag=marvinpay-config
 
 ```dotenv
 MARVIN_API_KEY=your_api_key
-MARVIN_BASE_URL=https://api.marvincorporate.co/api
+MARVIN_BASE_URL=https://app.marvincorporate.co/api
 MARVIN_WEBHOOK_SECRET=          # your webhook secret (enables signed webhook deliveries)
 ```
 

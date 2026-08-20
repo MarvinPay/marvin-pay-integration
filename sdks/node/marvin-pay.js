@@ -22,7 +22,7 @@
  *   const client = new MarvinPayClient({ apiKey: process.env.MARVIN_API_KEY });
  */
 
-const DEFAULT_BASE_URL = 'https://api.marvincorporate.co/api';
+const DEFAULT_BASE_URL = 'https://app.marvincorporate.co/api';
 
 /**
  * Error thrown for any non-2xx HTTP response, network failure, or timeout.

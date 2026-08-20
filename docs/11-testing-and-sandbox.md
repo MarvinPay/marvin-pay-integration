@@ -8,7 +8,7 @@ including success and failure handling — without moving real money.
 Sandbox/test access, test credentials, and test phone numbers are provided by
 Marvin Pay on request. Contact your Marvin Pay account manager to obtain:
 
-- the base URL of the test environment,
+- access to the test environment at `https://api.marvincorporate.co/api`,
 - a test API key, and
 - test phone numbers that produce deterministic `SUCCESS` / `FAILED` outcomes.
 
