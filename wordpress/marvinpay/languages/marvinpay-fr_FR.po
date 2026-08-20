@@ -1,0 +1,309 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Marvin Pay 1.0.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_FR\n"
+
+msgid "Pay with Marvin Pay"
+msgstr "Payer avec Marvin Pay"
+
+msgid "Donate with Marvin Pay"
+msgstr "Faire un don avec Marvin Pay"
+
+msgid "Amount"
+msgstr "Montant"
+
+msgid "Your name (optional)"
+msgstr "Votre nom (facultatif)"
+
+msgid "Email for receipt (optional)"
+msgstr "E-mail pour le reçu (facultatif)"
+
+msgid "Mobile money number"
+msgstr "Numéro mobile money"
+
+msgid "Payment method"
+msgstr "Moyen de paiement"
+
+msgid "Pay now"
+msgstr "Payer maintenant"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Confirm the payment prompt on your phone…"
+msgstr "Confirmez la demande de paiement sur votre téléphone…"
+
+msgid "Waiting for confirmation — this can take a minute."
+msgstr "En attente de confirmation — cela peut prendre une minute."
+
+msgid "Payment received"
+msgstr "Paiement reçu"
+
+msgid "Thank you! Your payment was confirmed."
+msgstr "Merci ! Votre paiement a été confirmé."
+
+msgid "Payment failed"
+msgstr "Paiement échoué"
+
+msgid "Try again"
+msgstr "Réessayer"
+
+msgid "Still pending. If you confirmed on your phone, the payment will be recorded automatically — you can check later with your reference."
+msgstr "Toujours en attente. Si vous avez confirmé sur votre téléphone, le paiement sera enregistré automatiquement — vous pourrez vérifier plus tard avec votre référence."
+
+msgid "Reference"
+msgstr "Référence"
+
+msgid "Enter a whole amount between 100 and 500,000."
+msgstr "Saisissez un montant entier entre 100 et 500 000."
+
+msgid "Enter a valid mobile money number."
+msgstr "Saisissez un numéro mobile money valide."
+
+msgid "Something went wrong. Please try again."
+msgstr "Une erreur est survenue. Veuillez réessayer."
+
+msgid "Amount must be a whole number between 100 and 500,000."
+msgstr "Le montant doit être un nombre entier entre 100 et 500 000."
+
+msgid "Please choose a valid payment method."
+msgstr "Veuillez choisir un moyen de paiement valide."
+
+msgid "Please enter a valid mobile money number."
+msgstr "Veuillez saisir un numéro mobile money valide."
+
+msgid "Amount does not match this payment button."
+msgstr "Le montant ne correspond pas à ce bouton de paiement."
+
+msgid "This payment form has expired — reload the page and try again."
+msgstr "Ce formulaire de paiement a expiré — rechargez la page et réessayez."
+
+msgid "Too many payment attempts — please wait a few minutes and try again."
+msgstr "Trop de tentatives de paiement — patientez quelques minutes puis réessayez."
+
+msgid "Payments are not configured on this site yet."
+msgstr "Les paiements ne sont pas encore configurés sur ce site."
+
+msgid "Successful"
+msgstr "Réussi"
+
+msgid "Failed"
+msgstr "Échoué"
+
+msgid "Pending"
+msgstr "En attente"
+
+msgid "Unconfirmed"
+msgstr "Non confirmé"
+
+msgid "Method"
+msgstr "Moyen"
+
+msgid "Mobile"
+msgstr "Mobile"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "No payment reference provided."
+msgstr "Aucune référence de paiement fournie."
+
+msgid "Payment reference not found."
+msgstr "Référence de paiement introuvable."
+
+msgid "Pay now with mobile money"
+msgstr "Payer maintenant par mobile money"
+
+msgid "Payment received — thank you!"
+msgstr "Paiement reçu — merci !"
+
+msgid "Mobile Money (Marvin Pay)"
+msgstr "Mobile Money (Marvin Pay)"
+
+msgid "Pay with MTN, Orange, Moov and other mobile-money providers. You will confirm the payment on your phone."
+msgstr "Payez avec MTN, Orange, Moov et d'autres opérateurs mobile money. Vous confirmerez le paiement sur votre téléphone."
+
+# ── Admin, gateway & widget-editor strings (added 2026-08-19) ──
+
+msgid "A fixed-amount Marvin Pay mobile-money payment button."
+msgstr "Un bouton de paiement mobile money Marvin Pay à montant fixe."
+
+msgid "A full Marvin Pay payment form embedded in the page."
+msgstr "Un formulaire de paiement Marvin Pay complet intégré à la page."
+
+msgid "Accept mobile-money payments through Marvin Pay — WooCommerce gateway plus pay-button, donation, inline-form and payment-status widgets."
+msgstr "Acceptez les paiements mobile money via Marvin Pay — passerelle WooCommerce plus widgets bouton de paiement, don, formulaire intégré et statut de paiement."
+
+msgid "Amount must be between %1$s and %2$s."
+msgstr "Le montant doit être compris entre %1$s et %2$s."
+
+msgid "Awaiting Marvin Pay mobile-money confirmation."
+msgstr "En attente de la confirmation mobile money Marvin Pay."
+
+msgid "Connected. Providers for %1$s: %2$s"
+msgstr "Connecté. Opérateurs pour %1$s : %2$s"
+
+msgid "Connection test"
+msgstr "Test de connexion"
+
+msgid "Could not start the payment — please try again."
+msgstr "Impossible de démarrer le paiement — veuillez réessayer."
+
+msgid "Country"
+msgstr "Pays"
+
+msgid "Delete the transactions table and all settings when the plugin is uninstalled."
+msgstr "Supprimer la table des transactions et tous les réglages lors de la désinstallation de l'extension."
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Enable Marvin Pay mobile money"
+msgstr "Activer le mobile money Marvin Pay"
+
+msgid "Enable/Disable"
+msgstr "Activer/Désactiver"
+
+msgid "Every 5 minutes (Marvin Pay reconciliation)"
+msgstr "Toutes les 5 minutes (réconciliation Marvin Pay)"
+
+msgid "Failure page"
+msgstr "Page d'échec"
+
+msgid "Fill in the API key, base URL and country first, then save."
+msgstr "Renseignez d'abord la clé API, l'URL de base et le pays, puis enregistrez."
+
+msgid "Invalid payment configuration."
+msgstr "Configuration de paiement invalide."
+
+msgid "Let visitors choose an amount and pay by mobile money."
+msgstr "Laissez les visiteurs choisir un montant et payer par mobile money."
+
+msgid "Live"
+msgstr "Production"
+
+msgid "Live API key"
+msgstr "Clé API de production"
+
+msgid "Live base URL"
+msgstr "URL de base de production"
+
+msgid "Marvin Pay"
+msgstr "Marvin Pay"
+
+msgid "Marvin Pay Button"
+msgstr "Bouton Marvin Pay"
+
+msgid "Marvin Pay Donation"
+msgstr "Don Marvin Pay"
+
+msgid "Marvin Pay Form"
+msgstr "Formulaire Marvin Pay"
+
+msgid "Marvin Pay Status"
+msgstr "Statut Marvin Pay"
+
+msgid "Marvin Pay is not configured — set the API key under Settings → Marvin Pay."
+msgstr "Marvin Pay n'est pas configuré — renseignez la clé API dans Réglages → Marvin Pay."
+
+msgid "Marvin Pay: payment failed."
+msgstr "Marvin Pay : paiement échoué."
+
+msgid "Marvin Pay: payment still unconfirmed after 24 hours — marked abandoned locally. A later confirmation will still be applied."
+msgstr "Marvin Pay : paiement toujours non confirmé après 24 heures — marqué abandonné localement. Une confirmation ultérieure sera tout de même appliquée."
+
+msgid "Mobile-money payments via Marvin Pay. API credentials are configured under Settings → Marvin Pay."
+msgstr "Paiements mobile money via Marvin Pay. Les identifiants API se configurent dans Réglages → Marvin Pay."
+
+msgid "Mode"
+msgstr "Mode"
+
+msgid "Not allowed."
+msgstr "Non autorisé."
+
+msgid "On uninstall"
+msgstr "À la désinstallation"
+
+msgid "Optional page to redirect to after a successful widget payment (add the Payment Status widget to it)."
+msgstr "Page facultative de redirection après un paiement réussi via widget (ajoutez-y le widget Statut de paiement)."
+
+msgid "Optional. Set the same secret on your Marvin Pay account to receive signed webhooks."
+msgstr "Facultatif. Définissez le même secret sur votre compte Marvin Pay pour recevoir des webhooks signés."
+
+msgid "Order not found."
+msgstr "Commande introuvable."
+
+msgid "Order total must be a whole amount between 100 and 500,000."
+msgstr "Le total de la commande doit être un montant entier entre 100 et 500 000."
+
+msgid "Paste this URL into your Marvin Pay merchant portal as the account webhook URL (must be HTTPS)."
+msgstr "Collez cette URL dans votre portail marchand Marvin Pay comme URL de webhook du compte (HTTPS obligatoire)."
+
+msgid "Provided by Marvin Pay support"
+msgstr "Fournie par le support Marvin Pay"
+
+msgid "Shows a payment's outcome from the ?mp_ref= link parameter — put it on your success page."
+msgstr "Affiche le résultat d'un paiement à partir du paramètre de lien ?mp_ref= — placez-le sur votre page de succès."
+
+msgid "Success page"
+msgstr "Page de succès"
+
+msgid "Test"
+msgstr "Test"
+
+msgid "Test API key"
+msgstr "Clé API de test"
+
+msgid "Test base URL"
+msgstr "URL de base de test"
+
+msgid "Test connection"
+msgstr "Tester la connexion"
+
+msgid "Test mode is selected but no test base URL is set. The test environment URL is provided by Marvin Pay support — payments are disabled until it is configured."
+msgstr "Le mode test est sélectionné mais aucune URL de base de test n'est définie. L'URL de l'environnement de test est fournie par le support Marvin Pay — les paiements sont désactivés tant qu'elle n'est pas configurée."
+
+msgid "The currency follows the country automatically — they always travel together."
+msgstr "La devise suit automatiquement le pays — ils vont toujours de pair."
+
+msgid "The order total must be a whole amount between 100 and 500,000 to pay with Marvin Pay."
+msgstr "Le total de la commande doit être un montant entier entre 100 et 500 000 pour payer avec Marvin Pay."
+
+msgid "The payment service is temporarily unavailable — please try again."
+msgstr "Le service de paiement est temporairement indisponible — veuillez réessayer."
+
+msgid "The stored key is kept unless you type a new one."
+msgstr "La clé enregistrée est conservée sauf si vous en saisissez une nouvelle."
+
+msgid "This order is already paid."
+msgstr "Cette commande est déjà payée."
+
+msgid "Title"
+msgstr "Titre"
+
+msgid "Unknown transaction."
+msgstr "Transaction inconnue."
+
+msgid "Webhook URL"
+msgstr "URL de webhook"
+
+msgid "Webhook secret"
+msgstr "Secret de webhook"
+
+msgid "WooCommerce is not active."
+msgstr "WooCommerce n'est pas actif."
+
+msgid "marvinpay_button needs a whole-number amount between 100 and 500,000."
+msgstr "marvinpay_button requiert un montant entier entre 100 et 500 000."
+
+msgid "marvinpay_form amount must be a whole number between 100 and 500,000 (or empty for payer-entered)."
+msgstr "Le montant de marvinpay_form doit être un nombre entier entre 100 et 500 000 (ou vide pour laisser le payeur le saisir)."
+
+msgid "— stay in the payment window —"
+msgstr "— rester dans la fenêtre de paiement —"

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="bootstrap.php"
+         colors="true"
+         failOnWarning="true">
+  <!-- Paths are relative to this file's directory (wordpress/tests/). -->
+  <testsuites>
+    <testsuite name="marvinpay">
+      <directory suffix="Test.php">.</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

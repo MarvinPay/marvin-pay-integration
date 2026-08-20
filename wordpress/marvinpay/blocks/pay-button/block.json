@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "marvinpay/pay-button",
+	"title": "Marvin Pay Button",
+	"category": "widgets",
+	"icon": "money-alt",
+	"description": "A fixed-amount Marvin Pay mobile-money payment button.",
+	"textdomain": "marvinpay",
+	"attributes": {
+		"amount": { "type": "string", "default": "" },
+		"description": { "type": "string", "default": "" },
+		"buttonText": { "type": "string", "default": "" }
+	},
+	"editorScript": "marvinpay-block-pay-button"
+}

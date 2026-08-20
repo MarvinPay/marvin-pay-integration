@@ -1,0 +1,454 @@
+# Copyright (C) 2026 Marvin Corporate
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Marvin Pay 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/marvinpay\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-19T13:14:17+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: marvinpay\n"
+
+#. Plugin Name of the plugin
+#: marvinpay.php
+msgid "Marvin Pay"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: marvinpay.php
+msgid "https://app.marvincorporate.co/plugins"
+msgstr ""
+
+#. Description of the plugin
+#: marvinpay.php
+msgid "Accept mobile-money payments through Marvin Pay — WooCommerce gateway plus pay-button, donation, inline-form and payment-status widgets."
+msgstr ""
+
+#. Author of the plugin
+#: marvinpay.php
+msgid "Marvin Corporate"
+msgstr ""
+
+#. Author URI of the plugin
+#: marvinpay.php
+msgid "https://app.marvincorporate.co"
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:34
+msgid "Please choose a valid payment method."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:38
+msgid "Please enter a valid mobile money number."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:57
+msgid "Amount must be a whole number between 100 and 500,000."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:62
+msgid "Amount does not match this payment button."
+msgstr ""
+
+#. translators: 1: minimum, 2: maximum
+#: includes/class-marvinpay-ajax.php:75
+#, php-format
+msgid "Amount must be between %1$s and %2$s."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:90
+msgid "Payments are not configured on this site yet."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:98
+msgid "This payment form has expired — reload the page and try again."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:103
+msgid "Invalid payment configuration."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:120
+msgid "WooCommerce is not active."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:124
+msgid "Order not found."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:127
+msgid "This order is already paid."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:133
+msgid "Order total must be a whole amount between 100 and 500,000."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:167
+msgid "Could not start the payment — please try again."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:193
+msgid "The payment service is temporarily unavailable — please try again."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:214
+#: includes/class-marvinpay-ajax.php:218
+msgid "Unknown transaction."
+msgstr ""
+
+#: includes/class-marvinpay-ajax.php:257
+msgid "Too many payment attempts — please wait a few minutes and try again."
+msgstr ""
+
+#: includes/class-marvinpay-blocks.php:41
+#: includes/class-marvinpay-plugin.php:66
+#: includes/class-marvinpay-shortcodes.php:24
+msgid "Pay with Marvin Pay"
+msgstr ""
+
+#: includes/class-marvinpay-blocks.php:51
+#: includes/class-marvinpay-shortcodes.php:54
+msgid "Donate with Marvin Pay"
+msgstr ""
+
+#: includes/class-marvinpay-cron.php:26
+msgid "Every 5 minutes (Marvin Pay reconciliation)"
+msgstr ""
+
+#: includes/class-marvinpay-cron.php:74
+msgid "Marvin Pay: payment still unconfirmed after 24 hours — marked abandoned locally. A later confirmation will still be applied."
+msgstr ""
+
+#: includes/class-marvinpay-fulfillment.php:69
+msgid "Marvin Pay: payment failed."
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:67
+#: includes/class-marvinpay-shortcodes.php:145
+msgid "Amount"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:68
+msgid "Your name (optional)"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:69
+msgid "Email for receipt (optional)"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:70
+msgid "Mobile money number"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:71
+msgid "Payment method"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:72
+msgid "Pay now"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:73
+msgid "Cancel"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:74
+msgid "Close"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:75
+msgid "Confirm the payment prompt on your phone…"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:76
+msgid "Waiting for confirmation — this can take a minute."
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:77
+msgid "Payment received"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:78
+msgid "Thank you! Your payment was confirmed."
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:79
+msgid "Payment failed"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:80
+msgid "Try again"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:81
+msgid "Still pending. If you confirmed on your phone, the payment will be recorded automatically — you can check later with your reference."
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:82
+#: includes/class-marvinpay-shortcodes.php:148
+msgid "Reference"
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:83
+msgid "Enter a whole amount between 100 and 500,000."
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:84
+msgid "Enter a valid mobile money number."
+msgstr ""
+
+#: includes/class-marvinpay-plugin.php:85
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:168
+msgid "Not allowed."
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:171
+msgid "Fill in the API key, base URL and country first, then save."
+msgstr ""
+
+#. translators: 1: country code, 2: provider list
+#: includes/class-marvinpay-settings.php:178
+#, php-format
+msgid "Connected. Providers for %1$s: %2$s"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:201
+msgid "Test mode is selected but no test base URL is set. The test environment URL is provided by Marvin Pay support — payments are disabled until it is configured."
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:209
+msgid "Mode"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:212
+msgid "Live"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:213
+msgid "Test"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:218
+msgid "Live API key"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:222
+msgid "The stored key is kept unless you type a new one."
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:225
+msgid "Test API key"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:231
+msgid "Live base URL"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:237
+msgid "Test base URL"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:238
+msgid "Provided by Marvin Pay support"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:243
+msgid "Country"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:252
+msgid "The currency follows the country automatically — they always travel together."
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:256
+msgid "Webhook secret"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:260
+msgid "Optional. Set the same secret on your Marvin Pay account to receive signed webhooks."
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:263
+msgid "Webhook URL"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:265
+msgid "Paste this URL into your Marvin Pay merchant portal as the account webhook URL (must be HTTPS)."
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:268
+msgid "Success page"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:269
+#: includes/class-marvinpay-settings.php:274
+msgid "— stay in the payment window —"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:270
+msgid "Optional page to redirect to after a successful widget payment (add the Payment Status widget to it)."
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:273
+msgid "Failure page"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:277
+msgid "On uninstall"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:279
+msgid "Delete the transactions table and all settings when the plugin is uninstalled."
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:285
+msgid "Connection test"
+msgstr ""
+
+#: includes/class-marvinpay-settings.php:287
+msgid "Test connection"
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:28
+#: includes/class-marvinpay-shortcodes.php:58
+#: includes/class-marvinpay-shortcodes.php:91
+msgid "Marvin Pay is not configured — set the API key under Settings → Marvin Pay."
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:32
+msgid "marvinpay_button needs a whole-number amount between 100 and 500,000."
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:98
+msgid "marvinpay_form amount must be a whole number between 100 and 500,000 (or empty for payer-entered)."
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:119
+msgid "No payment reference provided."
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:123
+msgid "Payment reference not found."
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:135
+msgid "Successful"
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:136
+msgid "Failed"
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:137
+msgid "Pending"
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:138
+msgid "Unconfirmed"
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:146
+msgid "Method"
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:147
+msgid "Mobile"
+msgstr ""
+
+#: includes/class-marvinpay-shortcodes.php:149
+msgid "Date"
+msgstr ""
+
+#: woocommerce/class-marvinpay-wc-blocks.php:40
+#: woocommerce/class-wc-gateway-marvinpay.php:38
+msgid "Mobile Money (Marvin Pay)"
+msgstr ""
+
+#: woocommerce/class-wc-gateway-marvinpay.php:15
+msgid "Mobile-money payments via Marvin Pay. API credentials are configured under Settings → Marvin Pay."
+msgstr ""
+
+#: woocommerce/class-wc-gateway-marvinpay.php:30
+msgid "Enable/Disable"
+msgstr ""
+
+#: woocommerce/class-wc-gateway-marvinpay.php:32
+msgid "Enable Marvin Pay mobile money"
+msgstr ""
+
+#: woocommerce/class-wc-gateway-marvinpay.php:36
+msgid "Title"
+msgstr ""
+
+#: woocommerce/class-wc-gateway-marvinpay.php:41
+msgid "Description"
+msgstr ""
+
+#: woocommerce/class-wc-gateway-marvinpay.php:43
+msgid "Pay with MTN, Orange, Moov and other mobile-money providers. You will confirm the payment on your phone."
+msgstr ""
+
+#: woocommerce/class-wc-gateway-marvinpay.php:68
+msgid "The order total must be a whole amount between 100 and 500,000 to pay with Marvin Pay."
+msgstr ""
+
+#: woocommerce/class-wc-gateway-marvinpay.php:72
+msgid "Awaiting Marvin Pay mobile-money confirmation."
+msgstr ""
+
+#: woocommerce/class-wc-gateway-marvinpay.php:91
+msgid "Payment received — thank you!"
+msgstr ""
+
+#: woocommerce/class-wc-gateway-marvinpay.php:123
+msgid "Pay now with mobile money"
+msgstr ""
+
+#: blocks/donation-form/block.json
+msgctxt "block title"
+msgid "Marvin Pay Donation"
+msgstr ""
+
+#: blocks/donation-form/block.json
+msgctxt "block description"
+msgid "Let visitors choose an amount and pay by mobile money."
+msgstr ""
+
+#: blocks/inline-form/block.json
+msgctxt "block title"
+msgid "Marvin Pay Form"
+msgstr ""
+
+#: blocks/inline-form/block.json
+msgctxt "block description"
+msgid "A full Marvin Pay payment form embedded in the page."
+msgstr ""
+
+#: blocks/pay-button/block.json
+msgctxt "block title"
+msgid "Marvin Pay Button"
+msgstr ""
+
+#: blocks/pay-button/block.json
+msgctxt "block description"
+msgid "A fixed-amount Marvin Pay mobile-money payment button."
+msgstr ""
+
+#: blocks/payment-status/block.json
+msgctxt "block title"
+msgid "Marvin Pay Status"
+msgstr ""
+
+#: blocks/payment-status/block.json
+msgctxt "block description"
+msgid "Shows a payment's outcome from the ?mp_ref= link parameter — put it on your success page."
+msgstr ""
