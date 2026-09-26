@@ -1,5 +1,6 @@
 package co.marvincorporate.pay.sdk;
 
+import co.marvincorporate.pay.sdk.model.AccountBalance;
 import co.marvincorporate.pay.sdk.model.Direction;
 import co.marvincorporate.pay.sdk.model.FeeBearer;
 import co.marvincorporate.pay.sdk.model.FeeEstimate;
@@ -123,6 +124,14 @@ public class MarvinPayClient {
         return getFees(currency, amount,
                 direction == null ? null : direction.name(),
                 feeBearer == null ? null : feeBearer.name());
+    }
+
+    /**
+     * {@code GET /v1/payment/balance} — balance of the account this API key belongs to.
+     * Scoped to the key: a merchant with several accounts calls once per key.
+     */
+    public AccountBalance getBalance() {
+        return get("/v1/payment/balance", true, AccountBalance.class);
     }
 
     /**

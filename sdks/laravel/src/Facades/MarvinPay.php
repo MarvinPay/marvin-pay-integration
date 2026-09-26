@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array payout(array $paymentRequest, ?string $idempotencyKey = null)
  * @method static array getStatus(string $transactionId)
  * @method static array getFees(array $params)
+ * @method static array getBalance()
  * @method static array getPaymentMethods(string $countryCode)
  * @method static array waitForCompletion(string $transactionId, array $opts = [])
  * @method static array getLastResponseHeaders()

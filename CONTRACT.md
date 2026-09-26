@@ -174,6 +174,18 @@ fields.
 Headers: `X-API-KEY`. Returns a JSON array of provider-name strings valid for the
 country (the values you pass as `payment_method`).
 
+### 3.6 `GET /v1/payment/balance` — account balance
+
+Headers: `X-API-KEY`. Returns the balances of **the account the key belongs to
+only** (one key → one account; call once per key for multiple accounts).
+Read-only, no idempotency key.
+
+**Response — `AccountBalanceResponse`** (snake_case): `account_id`, `name`,
+`currency`, `country_code`, `status`, `available_balance`, `pending_balance`,
+`reserved_balance`, `on_hold_balance`, `total_balance` (= available + pending +
+reserved + on_hold), `collect_balance`, `payout_balance`, `as_of` (ISO-8601).
+Amounts are decimals; empty buckets are `0`. Only `available_balance` is payable.
+
 ---
 
 ## 4. Confirming a transaction: polling + webhooks
@@ -312,3 +324,4 @@ treat `429` as retryable with backoff (respecting `Retry-After` if present).
 | GET | `/v1/payment/status/{transactionId}` | → `TransactionStatusResponse` |
 | GET | `/v1/payment/fees?currency&amount&direction&fee_bearer` | → `FeeEstimateResponse` |
 | GET | `/v1/payment/payment-methods/{countryCode}` | → `string[]` |
+| GET | `/v1/payment/balance` | → `AccountBalanceResponse` |

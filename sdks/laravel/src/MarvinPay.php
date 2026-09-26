@@ -85,6 +85,17 @@ class MarvinPay
     }
 
     /**
+     * Balance of the account this API key belongs to. `GET /v1/payment/balance`.
+     * Scoped to the key: a merchant with several accounts calls once per key.
+     *
+     * @return array<string,mixed> AccountBalanceResponse
+     */
+    public function getBalance(): array
+    {
+        return $this->get('/v1/payment/balance');
+    }
+
+    /**
      * List provider names valid for a country.
      * `GET /v1/payment/payment-methods/{countryCode}`.
      *

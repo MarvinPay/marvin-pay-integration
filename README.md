@@ -15,7 +15,7 @@ collection.
 
 | Folder | What |
 |--------|------|
-| [`docs/`](docs/) | The integration guide — auth, collect, payout, transaction status, idempotency, fees, webhooks, errors, testing. Start here. |
+| [`docs/`](docs/) | The integration guide — auth, collect, payout, transaction status, account balance, idempotency, fees, webhooks, errors, testing. Start here. |
 | [`sdks/node/`](sdks/node/) | Node.js (18+) client, webhook verifier, TypeScript types. |
 | [`sdks/php/`](sdks/php/) | Zero-dependency PHP 8.1+ client + webhook verifier. |
 | [`sdks/laravel/`](sdks/laravel/) | Laravel 10/11 package: config, service, facade, webhook middleware/controller. |

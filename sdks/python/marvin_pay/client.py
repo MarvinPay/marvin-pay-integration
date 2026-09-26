@@ -229,6 +229,19 @@ class MarvinPayClient:
             "GET", "/v1/payment/fees", params=params, allow_retry=True
         )
 
+    def get_balance(self):
+        """Fetch the balance of the account this API key belongs to.
+
+        ``GET /v1/payment/balance``. Scoped to the key: a merchant with several
+        accounts calls once per key.
+
+        Returns:
+            An ``AccountBalanceResponse`` dict (``available_balance``,
+            ``pending_balance``, ``total_balance``, ``currency``,
+            ``country_code``, ...).
+        """
+        return self._request("GET", "/v1/payment/balance", allow_retry=True)
+
     def get_payment_methods(self, country_code):
         """List the mobile-money providers valid for a country.
 
