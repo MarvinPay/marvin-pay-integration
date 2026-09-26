@@ -83,6 +83,15 @@
           }
         },
         {
+          "name": "Get Balance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/payment/balance", "host": ["{{baseUrl}}"], "path": ["v1", "payment", "balance"] },
+            "description": "Balances of the account this API key belongs to (available, pending, reserved, on_hold, total, collect, payout). Scoped to the key: a merchant with several accounts calls once per key."
+          }
+        },
+        {
           "name": "Get Payment Methods",
           "request": {
             "method": "GET",

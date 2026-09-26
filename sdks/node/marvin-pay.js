@@ -154,6 +154,16 @@ class MarvinPayClient {
   }
 
   /**
+   * Balance of the account this API key belongs to. GET /v1/payment/balance.
+   * Scoped to the key: a merchant with several accounts calls once per key.
+   * @returns {Promise<object>} AccountBalanceResponse
+   */
+  async getBalance() {
+    const { data } = await this._request('GET', '/v1/payment/balance');
+    return data;
+  }
+
+  /**
    * List the provider names valid for a country (the values you pass as
    * `payment_method`). GET /v1/payment/payment-methods/{countryCode}.
    * @param {string} countryCode  ISO-3166 alpha-2, e.g. "CM".

@@ -100,6 +100,25 @@ export interface FeeEstimateResponse {
 }
 
 /** Outbound webhook payload (see CONTRACT §8.4). */
+/** GET /v1/payment/balance — the calling key's account only. */
+export interface AccountBalanceResponse {
+  account_id: string;
+  name?: string;
+  currency: string;
+  country_code: string;
+  status: string;
+  available_balance: number;
+  pending_balance: number;
+  reserved_balance: number;
+  on_hold_balance: number;
+  /** available + pending + reserved + on_hold */
+  total_balance: number;
+  collect_balance: number;
+  payout_balance: number;
+  /** ISO-8601 timestamp of the snapshot. */
+  as_of: string;
+}
+
 export interface WebhookEvent {
   event: WebhookEventName;
   transactionId: string;
@@ -181,6 +200,7 @@ export declare class MarvinPayClient {
   payout(paymentRequest: PaymentRequest, opts?: IdempotencyOptions): Promise<PaymentResult>;
   getStatus(transactionId: string): Promise<TransactionStatusResponse>;
   getFees(params: GetFeesParams): Promise<FeeEstimateResponse>;
+  getBalance(): Promise<AccountBalanceResponse>;
   getPaymentMethods(countryCode: string): Promise<string[]>;
   waitForCompletion(
     transactionId: string,
