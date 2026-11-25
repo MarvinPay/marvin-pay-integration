@@ -206,11 +206,18 @@ start after **5s**, then exponential backoff capped at **60s**, **give up after
 
 - Header: **`X-Idempotency-Key: <key>`** on `POST /v1/payment/collect` and
   `POST /v1/payment/payout`.
-- Resolution order server-side: request header → body `idempotency_key` → an
-  auto-generated deterministic key based on your API key + `transaction_id`.
-- On replay within the retention window (~24h) the **original** `PaymentResult` is
-  returned, with response headers `X-Idempotency-Replay: true` (and
-  `X-Idempotency-Key-Auto` when the key was auto-generated).
+- Resolution order server-side: request header → body `idempotency_key` → your
+  `transaction_id`. Keys are scoped to your account. Even with no key at all, the
+  same `transaction_id` is never processed twice within the retention window.
+- On replay within the retention window (~48h) the **original** `PaymentResult` is
+  returned, with response header `X-Idempotency-Replay: true`. When no key was sent,
+  `X-Idempotency-Key-Auto` carries the `transaction_id` that was used as the key.
+- Reusing a key (or `transaction_id`) with a **different** amount, recipient or
+  method returns **422** `IDEMPOTENCY_KEY_REUSED`; it is never replayed.
+- If the first request is still being processed, the duplicate gets **409**
+  `IN_PROGRESS` with `Retry-After`; retry it, it will not be charged twice.
+- A request that fails (validation, insufficient balance) frees its key, so you
+  can retry with the same key after fixing the cause.
 
 SDK behavior: always send `X-Idempotency-Key`. If the caller doesn't supply one,
 default it to the `transaction_id` (stable + unique per attempt). Surface the
@@ -272,7 +279,9 @@ configured via the portal / account update.
 
 ### 6.5 Securing your webhook endpoint
 
-1. **Verify the signature** — when a webhook secret is configured on your account,
+1. **Verify the signature** — generate your signing secret in the merchant portal
+   (Accounts → Security & webhook → *Generate secret*; shown once). There is **one
+   secret per merchant**: it signs the webhooks of all your accounts. Once it exists,
    Marvin Pay sends `X-Webhook-Signature` (`sha256=<hex>`), an HMAC-SHA256 over the
    raw request body. Verify it with your webhook secret using the `WebhookVerifier`
    shipped in each SDK.
