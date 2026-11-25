@@ -16,10 +16,10 @@ return [
     |--------------------------------------------------------------------------
     | Base URL (includes the /api servlet context path)
     |--------------------------------------------------------------------------
-    | Production: https://api.marvincorporate.co/api
+    | Production: https://app.marvincorporate.co/api
     | Local/dev:  http://localhost:9090/api
     */
-    'base_url' => env('MARVIN_BASE_URL', 'https://api.marvincorporate.co/api'),
+    'base_url' => env('MARVIN_BASE_URL', 'https://app.marvincorporate.co/api'),
 
     /*
     |--------------------------------------------------------------------------

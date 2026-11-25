@@ -15,7 +15,7 @@ import co.marvincorporate.pay.sdk.model.TransactionStatusResponse;
  * <ul>
  *   <li>{@code MARVIN_API_KEY} (required) — your {@code X-API-KEY}.</li>
  *   <li>{@code MARVIN_BASE_URL} (optional) — defaults to
- *       {@code https://api.marvincorporate.co/api}. Set to
+ *       {@code https://app.marvincorporate.co/api}. Set to
  *       {@code http://localhost:9090/api} for local dev.</li>
  * </ul>
  *

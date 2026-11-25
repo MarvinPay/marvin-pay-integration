@@ -1,6 +1,6 @@
 # Marvin Pay — Java SDK
 
-A lightweight, self-contained Java client for the [Marvin Pay](https://api.marvincorporate.co)
+A lightweight, self-contained Java client for the [Marvin Pay](https://app.marvincorporate.co)
 mobile-money payment gateway (West & Central Africa, **XAF** / **XOF**, mobile money
 only — no card channel).
 
@@ -10,9 +10,9 @@ only — no card channel).
 - See [`../../CONTRACT.md`](../../CONTRACT.md) for the API reference.
   Deeper docs live in [`../../docs/`](../../docs/).
 
-> **Base URL includes `/api`.** Production is `https://api.marvincorporate.co/api`
+> **Base URL includes `/api`.** Production is `https://app.marvincorporate.co/api`
 > (the SDK default). The wire path for `/v1/payment/collect` is
-> `POST https://api.marvincorporate.co/api/v1/payment/collect`.
+> `POST https://app.marvincorporate.co/api/v1/payment/collect`.
 
 ---
 
@@ -51,7 +51,7 @@ MarvinPayClient client = new MarvinPayClient("YOUR_API_KEY");
 // MarvinPayClient client = new MarvinPayClient(
 //     MarvinPayConfig.builder()
 //         .apiKey("YOUR_API_KEY")
-//         .baseUrl("https://api.marvincorporate.co/api") // default
+//         .baseUrl("https://app.marvincorporate.co/api") // default
 //         .timeout(java.time.Duration.ofSeconds(30))
 //         .build());
 

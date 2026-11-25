@@ -12,7 +12,7 @@ Send `X-Idempotency-Key: <key>` on the money-moving POSTs:
 - `POST {BASE}/v1/payment/payout` ([Payout](04-payout.md))
 
 ```bash
-curl -X POST "https://api.marvincorporate.co/api/v1/payment/collect" \
+curl -X POST "https://app.marvincorporate.co/api/v1/payment/collect" \
   -H "X-API-KEY: YOUR_API_KEY" \
   -H "X-Idempotency-Key: order-1001-attempt-1" \
   -H "Content-Type: application/json" \

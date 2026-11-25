@@ -29,7 +29,7 @@ def main():
         sys.exit("Set MARVIN_API_KEY (see .env.example).")
 
     base_url = os.environ.get(
-        "MARVIN_BASE_URL", "https://api.marvincorporate.co/api"
+        "MARVIN_BASE_URL", "https://app.marvincorporate.co/api"
     )
     client = MarvinPayClient(api_key=api_key, base_url=base_url)
 

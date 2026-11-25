@@ -47,7 +47,7 @@ is charged on top and the merchant absorbs it. See
 ## Example
 
 ```bash
-curl -X POST "https://api.marvincorporate.co/api/v1/payment/payout" \
+curl -X POST "https://app.marvincorporate.co/api/v1/payment/payout" \
   -H "X-API-KEY: YOUR_API_KEY" \
   -H "X-Idempotency-Key: payout-5502-attempt-1" \
   -H "Content-Type: application/json" \

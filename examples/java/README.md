@@ -27,7 +27,7 @@ mvn -q compile
 
 ```bash
 export MARVIN_API_KEY=your_api_key
-# optional; defaults to https://api.marvincorporate.co/api
+# optional; defaults to https://app.marvincorporate.co/api
 export MARVIN_BASE_URL=http://localhost:9090/api
 
 mvn -q exec:java -Dexec.mainClass=examples.CollectExample

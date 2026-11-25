@@ -12,12 +12,12 @@ There is **no card channel** — every transaction rides a mobile-money provider
 
 The servlet context path is **`/api`**. Every route in these docs is served
 under `/api`, so the wire path for `/v1/payment/collect` is
-`POST https://api.marvincorporate.co/api/v1/payment/collect`.
+`POST https://app.marvincorporate.co/api/v1/payment/collect`.
 
 | Environment | Base URL |
 |-------------|----------|
-| Production  | `https://api.marvincorporate.co/api` |
-| Testing     | The test environment provided by Marvin Pay (see [Testing](11-testing-and-sandbox.md)) |
+| Production  | `https://app.marvincorporate.co/api` |
+| Testing     | `https://api.marvincorporate.co/api` (see [Testing](11-testing-and-sandbox.md)) |
 
 Throughout the docs, **`{BASE}`** means the base URL for your environment
 (including the trailing `/api`).
@@ -50,7 +50,7 @@ Replace `YOUR_API_KEY`, the phone number, and `transaction_id` (your own unique
 reference for the transaction).
 
 ```bash
-curl -X POST "https://api.marvincorporate.co/api/v1/payment/collect" \
+curl -X POST "https://app.marvincorporate.co/api/v1/payment/collect" \
   -H "X-API-KEY: YOUR_API_KEY" \
   -H "X-Idempotency-Key: order-1001-attempt-1" \
   -H "Content-Type: application/json" \

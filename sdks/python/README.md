@@ -129,7 +129,7 @@ for a complete example.
 | Parameter | Default | Notes |
 |-----------|---------|-------|
 | `api_key` | *(required)* | Sent as `X-API-KEY` on `/v1/payment/**`. |
-| `base_url` | `https://api.marvincorporate.co/api` | Include the `/api` context path. Local dev: `http://localhost:9090/api`. |
+| `base_url` | `https://app.marvincorporate.co/api` | Include the `/api` context path. Local dev: `http://localhost:9090/api`. |
 | `timeout` | `30` | Per-request timeout in seconds. |
 
 **Behavior baked in from the contract:**

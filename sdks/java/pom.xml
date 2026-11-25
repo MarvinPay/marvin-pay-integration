@@ -15,7 +15,7 @@
         gateway (collect, payout, status, fees, and webhook verification).
         Uses the JDK HttpClient and Jackson only.
     </description>
-    <url>https://api.marvincorporate.co</url>
+    <url>https://app.marvincorporate.co</url>
 
     <properties>
         <maven.compiler.release>17</maven.compiler.release>

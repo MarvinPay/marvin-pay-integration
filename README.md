@@ -30,16 +30,16 @@ collection.
 
 ## Quickstart (60 seconds)
 
-**Base URL:** `https://api.marvincorporate.co/api` — note the `/api` context path.
+**Base URL:** `https://app.marvincorporate.co/api` — note the `/api` context path.
 **Auth:** send your key as the `X-API-KEY` header on `/v1/payment/**`.
 
 ```bash
 # 1. Ask for a fee estimate
 curl -H "X-API-KEY: $MARVIN_API_KEY" \
-  "https://api.marvincorporate.co/api/v1/payment/fees?currency=XAF&amount=5000&direction=COLLECT"
+  "https://app.marvincorporate.co/api/v1/payment/fees?currency=XAF&amount=5000&direction=COLLECT"
 
 # 2. Collect XAF 5000 from an MTN Cameroon customer
-curl -X POST "https://api.marvincorporate.co/api/v1/payment/collect" \
+curl -X POST "https://app.marvincorporate.co/api/v1/payment/collect" \
   -H "X-API-KEY: $MARVIN_API_KEY" \
   -H "X-Idempotency-Key: $(uuidgen)" \
   -H "Content-Type: application/json" \
@@ -55,7 +55,7 @@ curl -X POST "https://api.marvincorporate.co/api/v1/payment/collect" \
 
 # 3. The response is usually PENDING — confirm the outcome:
 curl -H "X-API-KEY: $MARVIN_API_KEY" \
-  "https://api.marvincorporate.co/api/v1/payment/status/MARVIN-0001"
+  "https://app.marvincorporate.co/api/v1/payment/status/MARVIN-0001"
 ```
 
 Or with an SDK (Node):

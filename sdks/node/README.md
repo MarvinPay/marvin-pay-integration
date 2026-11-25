@@ -208,7 +208,7 @@ A runnable version is in [`../../examples/node/webhook-server.js`](../../example
 | Option        | Type     | Default                                  | Notes |
 |---------------|----------|------------------------------------------|-------|
 | `apiKey`      | `string` | —                                        | Sent as `X-API-KEY` on the payment API. |
-| `baseUrl`     | `string` | `https://api.marvincorporate.co/api`     | Must include the `/api` context path. Dev: `http://localhost:9090/api`. |
+| `baseUrl`     | `string` | `https://app.marvincorporate.co/api`     | Must include the `/api` context path. Dev: `http://localhost:9090/api`. |
 | `timeoutMs`   | `number` | `30000`                                  | Per-request timeout (AbortController). |
 
 **Behavior notes**

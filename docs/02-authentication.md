@@ -7,7 +7,7 @@ The payment API uses a single authentication scheme: an **API key** sent in the
 - Obtain your API key from the merchant portal or your Marvin Pay account manager.
 
 ```bash
-curl -X GET "https://api.marvincorporate.co/api/v1/payment/payment-methods/CM" \
+curl -X GET "https://app.marvincorporate.co/api/v1/payment/payment-methods/CM" \
   -H "X-API-KEY: YOUR_API_KEY"
 ```
 

@@ -47,7 +47,7 @@ handset, then resolution. The `status` number being 200/202 means the request wa
 ## Example
 
 ```bash
-curl -X POST "https://api.marvincorporate.co/api/v1/payment/collect" \
+curl -X POST "https://app.marvincorporate.co/api/v1/payment/collect" \
   -H "X-API-KEY: YOUR_API_KEY" \
   -H "X-Idempotency-Key: order-1001-attempt-1" \
   -H "Content-Type: application/json" \

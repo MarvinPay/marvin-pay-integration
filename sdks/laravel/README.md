@@ -1,7 +1,7 @@
 # Marvin Pay — Laravel package (`marvinpay/laravel`)
 
 A self-contained Laravel 10/11 integration for the
-[Marvin Pay](https://api.marvincorporate.co) mobile-money payment gateway. Uses
+[Marvin Pay](https://app.marvincorporate.co) mobile-money payment gateway. Uses
 Laravel's `Http` client under the hood — it does **not** depend on the vanilla
 `marvinpay/sdk` package.
 
@@ -40,7 +40,7 @@ This writes `config/marvinpay.php`. Set these env keys:
 
 ```dotenv
 MARVIN_API_KEY=your_api_key
-MARVIN_BASE_URL=https://api.marvincorporate.co/api
+MARVIN_BASE_URL=https://app.marvincorporate.co/api
 MARVIN_WEBHOOK_SECRET=          # your webhook secret (enables signed webhook deliveries)
 MARVIN_TIMEOUT=30
 ```
