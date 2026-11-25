@@ -79,7 +79,9 @@ normalize both. See [Reference](10-reference.md#transaction-status).
 
 Handle webhooks defensively:
 
-1. **Verify the signature.** When a webhook secret is configured on your account,
+1. **Verify the signature.** Generate your signing secret in the merchant portal
+   (Accounts → Security & webhook → *Generate secret*; shown once). There is one
+   secret per merchant: it signs the webhooks of all your accounts. Once it exists,
    Marvin Pay sends `X-Webhook-Signature` (`sha256=<hex>`), an HMAC-SHA256 over the
    **raw request body**. Verify it with your webhook secret using the
    `WebhookVerifier` shipped in each [SDK](../sdks). Compare with a constant-time
