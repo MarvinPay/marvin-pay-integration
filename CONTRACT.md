@@ -18,6 +18,10 @@
 - **Currency + country always travel together.** Every request carries BOTH
   `currency` and `country_code`. Sending one without the other is invalid.
 - **Idempotency:** the money-moving POSTs accept `X-Idempotency-Key` (see §5).
+- **Rotating your API key:** in the merchant portal open the account, then
+  *Regenerate API key* (merchant admins only). The old key stops working
+  immediately, so deploy the new one right away. Every regeneration is recorded
+  in your portal audit log.
 
 ### Base URL
 
@@ -280,8 +284,9 @@ configured via the portal / account update.
 ### 6.5 Securing your webhook endpoint
 
 1. **Verify the signature** — generate your signing secret in the merchant portal
-   (Accounts → Security & webhook → *Generate secret*; shown once). There is **one
-   secret per merchant**: it signs the webhooks of all your accounts. Once it exists,
+   (Settings → Security → *Generate secret*; shown once). There is **one secret per
+   merchant**, set next to the merchant-level IP whitelist: it signs the webhooks of
+   all your accounts. Regenerating it replaces it immediately. Once it exists,
    Marvin Pay sends `X-Webhook-Signature` (`sha256=<hex>`), an HMAC-SHA256 over the
    raw request body. Verify it with your webhook secret using the `WebhookVerifier`
    shipped in each SDK.
